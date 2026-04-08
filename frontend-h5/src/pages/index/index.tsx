@@ -11,7 +11,7 @@ export default function Index() {
         <Space direction='vertical' style={{ width: '100%' }}>
           <Button type='primary'>NutUI Button</Button>
           <Button type='success' plain>
-            Cross-platform setup OK
+            Cross-platform setup OK. 123432
           </Button>
         </Space>
       </View>

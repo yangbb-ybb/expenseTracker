@@ -2,6 +2,7 @@
 .npm-cache
 node_modules
 dist
+.claude
 
 # local env files
 .env.local

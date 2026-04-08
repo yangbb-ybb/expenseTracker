@@ -22,6 +22,10 @@ export default defineConfig((merge) => {
     },
     framework: 'react',
     compiler: 'webpack5',
+    alias: {
+      '@/store': '/Users/qidianyun/Documents/company/myApp/frontend-h5/src/store',
+      '@': '/Users/qidianyun/Documents/company/myApp/frontend-h5/src',
+    },
     mini: {
       postcss: {
         pxtransform: {
