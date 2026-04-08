@@ -1,6 +1,5 @@
 import { View } from '@tarojs/components'
 import { Button, Cell, ConfigProvider, Space } from '@nutui/nutui-react-taro'
-import '@nutui/nutui-react-taro/dist/style.css'
 import './index.scss'
 
 export default function Index() {

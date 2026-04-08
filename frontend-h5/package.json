@@ -5,6 +5,7 @@
   "description": "Taro multi-end H5 project",
   "scripts": {
     "dev:h5": "taro build --type h5 --watch",
+    "dev:h5:prod": "taro build --type h5 --watch --mode prod",
     "build:h5": "taro build --type h5",
     "dev:weapp": "taro build --type weapp --watch",
     "build:weapp": "taro build --type weapp"

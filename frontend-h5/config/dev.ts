@@ -1,8 +1,8 @@
 export default {
-  env: {
-    NODE_ENV: 'development'
-  },
+  env: {},
   defineConstants: {},
   mini: {},
-  h5: {}
+  h5: {
+    hot: true
+  }
 }
