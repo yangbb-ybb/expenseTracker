@@ -8,7 +8,8 @@
     "dev:h5:prod": "taro build --type h5 --watch --mode prod",
     "build:h5": "taro build --type h5",
     "dev:weapp": "taro build --type weapp --watch",
-    "build:weapp": "taro build --type weapp"
+    "build:weapp": "taro build --type weapp",
+    "postinstall": "node scripts/fix-prebundle.js"
   },
   "dependencies": {
     "@nutui/nutui-react-taro": "^3.0.19",
@@ -18,12 +19,14 @@
     "@tarojs/router": "3.6.38",
     "@tarojs/runtime": "3.6.38",
     "@tarojs/taro": "3.6.38",
+    "axios": "^1.14.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.14.0",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.29.2",
     "@babel/preset-typescript": "^7.28.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
     "@tarojs/cli": "3.6.38",
@@ -31,7 +34,10 @@
     "@tarojs/webpack5-runner": "3.6.38",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
+    "babel-loader": "^10.1.1",
+    "core-js": "^3.49.0",
     "sass": "^1.75.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "webpack": "5.78.0"
   }
 }

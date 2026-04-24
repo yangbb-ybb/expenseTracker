@@ -3,6 +3,11 @@ export default {
   defineConstants: {},
   mini: {},
   h5: {
-    hot: true
+    hot: true,
+    devServer: {
+      client: {
+        overlay: false
+      }
+    }
   }
 }

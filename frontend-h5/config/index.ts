@@ -50,6 +50,16 @@ export default defineConfig((merge) => {
     h5: {
       publicPath: '/',
       staticDirectory: 'static',
+      asyncWebpack: true,
+      webpackChain(chain: any) {
+        // 忽略特定警告，防止触发 overlay
+        chain.merge({
+          optimization: {
+            minimize: false
+          },
+          plugins: []
+        })
+      },
       postcss: {
         autoprefixer: {
           enable: true,
