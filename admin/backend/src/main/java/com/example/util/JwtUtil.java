@@ -20,11 +20,6 @@ import java.util.Date;
  * JWT 结构（三部分，用 . 分隔）：
  *   Header.Payload.Signature
  *   例如：xxx.yyy.zzz
- *
- * 为什么用 JWT？
- *   - 无状态：服务器不需要存储 session
- *   - 可验证：签名保证了内容不被篡改
- *   - 跨域：可以在不同域之间传递
  */
 public class JwtUtil {
 
@@ -36,33 +31,40 @@ public class JwtUtil {
     private static final String SECRET = "your-secret-key-must-be-at-least-32-characters-long";
 
     /**
-     * Token 有效期：24小时（单位：毫秒）
-     * 24 * 60 * 60 * 1000 = 86400000
+     * 默认 Token 有效期：7天（毫秒）
+     * 可以通过 generateToken(userId, validity) 自定义有效期
      */
-    private static final long EXPIRATION = 86400000L;
+    private static final long DEFAULT_VALIDITY = 7 * 24 * 60 * 60 * 1000L;
 
     /**
-     * 生成 Token
+     * 生成 Token（使用默认有效期 7 天）
      *
      * @param userId 用户ID
      * @return JWT Token 字符串
-     *
-     * JWT 生成过程：
-     *   1. 创建 Builder
-     *   2. 设置主题（subject）= 用户ID
-     *   3. 设置签发时间
-     *   4. 设置过期时间
-     *   5. 用密钥签名
-     *   6. 生成 token 字符串
      */
     public static String generateToken(Long userId) {
+        return generateToken(userId, DEFAULT_VALIDITY);
+    }
+
+    /**
+     * 生成 Token（自定义有效期）
+     *
+     * @param userId   用户ID
+     * @param validity 有效期（毫秒）
+     * @return JWT Token 字符串
+     *
+     * 示例：
+     *   generateToken(1L, 24 * 60 * 60 * 1000L)  // 24小时有效期
+     *   generateToken(1L, 7 * 24 * 60 * 60 * 1000L)  // 7天有效期
+     */
+    public static String generateToken(Long userId, long validity) {
         return Jwts.builder()
                 // 设置 token 主题，存储用户ID
                 .subject(String.valueOf(userId))
                 // 设置签发时间（当前时间）
                 .issuedAt(new Date())
-                // 设置过期时间（当前时间 + 24小时）
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                // 设置过期时间（当前时间 + 有效期）
+                .expiration(new Date(System.currentTimeMillis() + validity))
                 // 用密钥签名（HMAC SHA 算法）
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
                 // 生成 token 字符串
@@ -70,15 +72,10 @@ public class JwtUtil {
     }
 
     /**
-     * 解析 Token
+     * 解析 Token（验证签名，获取用户ID）
      *
      * @param token JWT Token 字符串
      * @return 用户ID
-     *
-     * 解析过程：
-     *   1. 用密钥验证签名（防止篡改）
-     *   2. 解析 token，获取 Claims（载荷）
-     *   3. 从 Claims 中取出 subject（用户ID）
      *
      * 注意：如果 token 过期或被篡改，会抛出异常
      */
@@ -96,5 +93,32 @@ public class JwtUtil {
 
         // 返回存储的用户ID
         return Long.parseLong(claims.getSubject());
+    }
+
+    /**
+     * 获取 Token 过期时间
+     *
+     * @param token JWT Token 字符串
+     * @return 过期时间戳（毫秒）
+     */
+    public static long getExpiration(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.getExpiration().getTime();
+    }
+
+    /**
+     * 计算 Token 剩余有效期
+     *
+     * @param token JWT Token 字符串
+     * @return 剩余时间（毫秒），<=0 表示已过期
+     */
+    public static long getRemainingTime(String token) {
+        long expiration = getExpiration(token);
+        return expiration - System.currentTimeMillis();
     }
 }

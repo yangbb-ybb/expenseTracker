@@ -44,6 +44,16 @@ knife4j:
   setting:
     language: zh_cn
 
+# JWT 配置
+jwt:
+  # Token 有效期（毫秒），默认 7 天
+  # 7 天 = 7 * 24 * 60 * 60 * 1000 = 604800000
+  validity: 604800000
+  # 自动续期阈值（毫秒），默认 1 小时
+  # 当 Token 剩余时间 < 此值时，自动续期
+  # 1 小时 = 60 * 60 * 1000 = 3600000
+  renewal-threshold: 3600000
+
 logging:
   level:
     com.example: debug
