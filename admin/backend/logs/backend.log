@@ -1,0 +1,20 @@
+2026-04-29 17:59:08.319 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-04-29 17:59:08.333 [main] INFO  com.example.BackendApplication - Starting BackendApplication using Java 25.0.2 with PID 1603 (/Users/qidianyun/Documents/company/myApp/admin/backend/target/classes started by qidianyun in /Users/qidianyun/Documents/company/myApp/admin/backend)
+2026-04-29 17:59:08.333 [main] DEBUG com.example.BackendApplication - Running with Spring Boot v3.2.0, Spring v6.1.1
+2026-04-29 17:59:08.334 [main] INFO  com.example.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2026-04-29 17:59:09.122 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-04-29 17:59:09.123 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-29 17:59:09.123 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-04-29 17:59:09.150 [main] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+2026-04-29 17:59:15.357 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-04-29 17:59:15.370 [main] INFO  com.example.BackendApplication - Started BackendApplication in 7.487 seconds (process running for 7.713)
+2026-04-29 18:00:04.764 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-29 18:00:04.794 [http-nio-8080-exec-1] INFO  c.e.c.aspect.ControllerLogAspect - ========== 接口请求开始 ==========
+2026-04-29 18:00:04.794 [http-nio-8080-exec-1] INFO  c.e.c.aspect.ControllerLogAspect - 请求时间: 2026-04-29 18:00:04
+2026-04-29 18:00:04.794 [http-nio-8080-exec-1] INFO  c.e.c.aspect.ControllerLogAspect - 请求 IP: 0:0:0:0:0:0:0:1
+2026-04-29 18:00:04.794 [http-nio-8080-exec-1] INFO  c.e.c.aspect.ControllerLogAspect - 请求方法: GET /api/user/info
+2026-04-29 18:00:04.794 [http-nio-8080-exec-1] INFO  c.e.c.aspect.ControllerLogAspect - 类名方法: UserController.getUserInfo
+2026-04-29 18:00:04.794 [http-nio-8080-exec-1] INFO  c.e.c.aspect.ControllerLogAspect - 请求参数: {"userId": 1}
+2026-04-29 18:00:04.875 [http-nio-8080-exec-1] INFO  c.e.c.aspect.ControllerLogAspect - 请求耗时: 82 ms
+2026-04-29 18:00:05.029 [http-nio-8080-exec-1] INFO  c.e.c.aspect.ControllerLogAspect - 返回结果: {"code":200,"data":{"createTime":"2026-04-29 15:22:31","email":"admin@example.com","id":1,"nickname":"ç®¡ç†å‘˜","status":1,"username":"admin"},"message":"操作成功"}
+2026-04-29 18:00:05.029 [http-nio-8080-exec-1] INFO  c.e.c.aspect.ControllerLogAspect - ========== 接口请求结束 ==========
