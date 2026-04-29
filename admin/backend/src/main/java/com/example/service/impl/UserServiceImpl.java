@@ -9,16 +9,18 @@ import com.example.entity.vo.UserInfoVO;
 import com.example.repository.UserRepository;
 import com.example.service.UserService;
 import com.example.util.JwtUtil;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public String login(UserLoginDTO dto) {

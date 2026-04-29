@@ -6,15 +6,19 @@ import com.example.entity.dto.UserRegisterDTO;
 import com.example.entity.vo.UserInfoVO;
 import com.example.service.UserService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
-@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/login")
     public Result<String> login(@Valid @RequestBody UserLoginDTO dto) {
@@ -29,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public Result<UserInfoVO> getUserInfo(@RequestHeader Long userId) {
+    public Result<UserInfoVO> getUserInfo(@RequestParam Long userId) {
         return Result.success(userService.getUserInfo(userId));
     }
 }
