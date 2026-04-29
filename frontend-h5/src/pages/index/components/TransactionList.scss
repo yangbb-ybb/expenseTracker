@@ -1,0 +1,38 @@
+.transaction-list {
+  margin-top: 12px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 16px 8px;
+    border-bottom: 1px solid #f5f5f5;
+  }
+
+  &__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  &__more {
+    font-size: 12px;
+    color: #999;
+  }
+
+  &__amount {
+    font-size: 15px;
+    font-weight: 500;
+
+    &.income {
+      color: #ee4d4d;
+    }
+
+    &.expense {
+      color: #4d994d;
+    }
+  }
+}
