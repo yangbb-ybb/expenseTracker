@@ -1,23 +1,24 @@
+# =====================================================
+#  环境配置（修改这里切换环境）
+# =====================================================
+# 可选值：dev | test | prod
+# 接手项目的人只需要修改这一行即可
+spring:
+  profiles:
+    active: dev
+
+  application:
+    name: backend
+# =====================================================
+
+# ========== 以下是公共配置，各环境通用 ==========
+
 server:
   port: 8080
   servlet:
     context-path: /api
 
-spring:
-  application:
-    name: backend
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3307/backend?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&connectTimeout=30000
-    username: root
-    password:
-    druid:
-      initial-size: 5
-      min-idle: 5
-      max-active: 20
-      test-while-idle: true
-      test-on-borrow: false
-      test-on-return: false
+  # Redis 配置（各环境可能不同，在对应 yml 中覆盖）
   data:
     redis:
       host: localhost
@@ -46,13 +47,8 @@ knife4j:
 
 # JWT 配置
 jwt:
-  # Token 有效期（毫秒），默认 7 天
-  # 7 天 = 7 * 24 * 60 * 60 * 1000 = 604800000
-  validity: 604800000
-  # 自动续期阈值（毫秒），默认 1 小时
-  # 当 Token 剩余时间 < 此值时，自动续期
-  # 1 小时 = 60 * 60 * 1000 = 3600000
-  renewal-threshold: 3600000
+  validity: 604800000           # Token 有效期（毫秒）
+  renewal-threshold: 3600000      # 自动续期阈值（毫秒）
 
 logging:
   level:

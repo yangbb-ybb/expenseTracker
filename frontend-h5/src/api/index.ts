@@ -3,6 +3,11 @@ import http from '@/utils/request'
 // 用户相关
 export const userApi = {
   login: (data: { username: string; password: string }) => http.post('/login', data),
+  wxLogin: (data: { code: string }) => http.post('/login/wx', data),
+  aliLogin: (data: { authCode: string }) => http.post('/login/ali', data),
+  ttLogin: (data: { code: string }) => http.post('/login/tt', data),
+  sendSms: (data: { phone: string }) => http.post('/sms/send', data),
+  smsLogin: (data: { phone: string; code: string }) => http.post('/login/sms', data),
   logout: () => http.post('/logout'),
   getUserInfo: () => http.get('/user/info'),
   updateUserInfo: (data: any) => http.put('/user/info', data)

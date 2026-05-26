@@ -1,0 +1,42 @@
+# 生产环境配置
+# 激活方式：--spring.profiles.active=prod
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 真实生产数据库
+    url: jdbc:mysql://prod-mysql.example.com:3306/backend?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=true&allowPublicKeyRetrieval=false&connectTimeout=30000
+    username: prod_user
+    password: ${MYSQL_PASSWORD}  # 从环境变量读取密码，更安全！
+    druid:
+      initial-size: 10
+      min-idle: 10
+      max-active: 50
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: true
+
+  data:
+    redis:
+      host: prod-redis.example.com
+      port: 6379
+      password: ${REDIS_PASSWORD}  # 从环境变量读取
+      database: 0
+      timeout: 5000
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 5
+
+# JWT 配置（生产环境安全第一）
+jwt:
+  validity: 604800000         # 7天
+  renewal-threshold: 3600000   # 1小时
+
+# 日志级别（生产环境减少日志）
+logging:
+  level:
+    com.example: INFO
+  file:
+    name: /var/log/backend/application.log  # 生产环境日志文件路径

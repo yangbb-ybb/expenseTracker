@@ -126,9 +126,9 @@ public class ControllerLogAspect {
 
             // 打印请求结束日志
             if (error != null) {
-                // 有异常的情况
+                // 有异常的情况，记录完整堆栈
                 log.error("请求耗时: {} ms", costTime);
-                log.error("接口异常: {}", error.getMessage());
+                log.error("接口异常: {}", error.getMessage(), error);
                 log.error("========== 接口请求结束 ==========");
             } else {
                 // 正常情况

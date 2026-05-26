@@ -40,6 +40,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 // 排除登录和注册接口（这些接口不需要 Token）
                 .excludePathPatterns("/user/login", "/user/register")
+                .excludePathPatterns("/sms/send", "/login/sms", "/login/wx", "/login/ali", "/login/tt")
                 // 排除接口文档路径
                 .excludePathPatterns("/doc.html", "/swagger-ui/**", "/v3/api-docs/**");
     }

@@ -2,6 +2,7 @@ import { View, Text } from '@tarojs/components'
 import { Avatar } from '@nutui/nutui-react-taro'
 import { useEffect, useState } from 'react'
 import { userApi } from '@/api'
+import { ensureLoggedIn } from '@/utils/auth'
 import './UserInfo.scss'
 
 interface UserInfoProps {
@@ -18,17 +19,26 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
   })
 
   useEffect(() => {
-    userApi.getUserInfo().then((res: any) => {
-      if (res?.data) {
-        setUserInfo({
-          username: res.data.username || '用户',
-          avatar: res.data.avatar || '',
-          balance: res.data.balance || '0.00'
-        })
+    async function init() {
+      try {
+        // 1. 先检查本地 token，没有则尝试登录
+        await ensureLoggedIn()
+
+        // 2. 有 token 后再请求用户信息
+        const res: any = await userApi.getUserInfo()
+        if (res?.data) {
+          setUserInfo({
+            username: res.data.username || '用户',
+            avatar: res.data.avatar || '',
+            balance: res.data.balance || '0.00'
+          })
+        }
+      } catch {
+        setUserInfo(prev => ({ ...prev, username: '未登录' }))
       }
-    }).catch(() => {
-      setUserInfo(prev => ({ ...prev, username: '未登录' }))
-    })
+    }
+
+    init()
   }, [])
 
   return (
