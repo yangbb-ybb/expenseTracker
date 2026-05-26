@@ -3,6 +3,7 @@
 node_modules
 dist
 .claude
+admin/backend/logs/*
 
 # local env files
 .env.local
