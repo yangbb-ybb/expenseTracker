@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.entity.dto.*;
+import com.example.entity.vo.LoginResultVO;
 
 /**
  * 认证服务接口
@@ -18,28 +19,28 @@ public interface AuthService {
     /**
      * 短信验证码登录
      * @param dto 手机号 + 验证码
-     * @return JWT Token
+     * @return 登录结果（token + 用户信息）
      */
-    String smsLogin(SmsLoginDTO dto);
+    LoginResultVO smsLogin(SmsLoginDTO dto);
 
     /**
      * 微信登录
      * @param dto 微信 code
-     * @return JWT Token
+     * @return 登录结果（token + 用户信息）
      */
-    String wxLogin(WxLoginDTO dto);
+    LoginResultVO wxLogin(WxLoginDTO dto);
 
     /**
      * 支付宝登录
      * @param dto 支付宝 authCode
-     * @return JWT Token
+     * @return 登录结果（token + 用户信息）
      */
-    String aliLogin(AliLoginDTO dto);
+    LoginResultVO aliLogin(AliLoginDTO dto);
 
     /**
      * 抖音登录
      * @param dto 抖音 code
-     * @return JWT Token
+     * @return 登录结果（token + 用户信息）
      */
-    String ttLogin(TtLoginDTO dto);
+    LoginResultVO ttLogin(TtLoginDTO dto);
 }

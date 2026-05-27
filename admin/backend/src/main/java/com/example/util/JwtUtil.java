@@ -43,28 +43,54 @@ public class JwtUtil {
      * @return JWT Token 字符串
      */
     public static String generateToken(Long userId) {
-        return generateToken(userId, DEFAULT_VALIDITY);
+        return generateToken(userId, null, DEFAULT_VALIDITY);
     }
 
     /**
-     * 生成 Token（自定义有效期）
+     * 生成 Token（携带登录方式）
+     *
+     * @param userId    用户ID
+     * @param loginType 登录方式：sms、wx、ali、tt
+     * @return JWT Token 字符串
+     */
+    public static String generateToken(Long userId, String loginType) {
+        return generateToken(userId, loginType, DEFAULT_VALIDITY);
+    }
+
+    /**
+     * 生成 Token（自定义有效期，不带登录方式）
      *
      * @param userId   用户ID
      * @param validity 有效期（毫秒）
      * @return JWT Token 字符串
-     *
-     * 示例：
-     *   generateToken(1L, 24 * 60 * 60 * 1000L)  // 24小时有效期
-     *   generateToken(1L, 7 * 24 * 60 * 60 * 1000L)  // 7天有效期
      */
     public static String generateToken(Long userId, long validity) {
-        return Jwts.builder()
+        return generateToken(userId, null, validity);
+    }
+
+    /**
+     * 生成 Token（自定义有效期 + 登录方式）
+     *
+     * @param userId    用户ID
+     * @param loginType 登录方式
+     * @param validity  有效期（毫秒）
+     * @return JWT Token 字符串
+     */
+    public static String generateToken(Long userId, String loginType, long validity) {
+        var builder = Jwts.builder()
                 // 设置 token 主题，存储用户ID
                 .subject(String.valueOf(userId))
                 // 设置签发时间（当前时间）
                 .issuedAt(new Date())
                 // 设置过期时间（当前时间 + 有效期）
-                .expiration(new Date(System.currentTimeMillis() + validity))
+                .expiration(new Date(System.currentTimeMillis() + validity));
+
+        // 如果有登录方式，存入自定义 claim
+        if (loginType != null && !loginType.isEmpty()) {
+            builder.claim("loginType", loginType);
+        }
+
+        return builder
                 // 用密钥签名（HMAC SHA 算法）
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
                 // 生成 token 字符串
@@ -109,6 +135,22 @@ public class JwtUtil {
                 .getPayload();
 
         return claims.getExpiration().getTime();
+    }
+
+    /**
+     * 解析登录方式
+     *
+     * @param token JWT Token 字符串
+     * @return 登录方式（sms、wx、ali、tt），没有则返回 null
+     */
+    public static String parseLoginType(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.get("loginType", String.class);
     }
 
     /**

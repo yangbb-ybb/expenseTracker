@@ -87,6 +87,7 @@ export async function doLogin(): Promise<string> {
  */
 export async function ensureLoggedIn(): Promise<string> {
   const token = getToken()
+  console.log(token);
   if (token) {
     return token
   }

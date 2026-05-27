@@ -4,14 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.common.exception.BusinessException;
 import com.example.entity.dto.*;
 import com.example.entity.po.User;
+import com.example.entity.vo.LoginResultVO;
 import com.example.repository.UserRepository;
 import com.example.service.AuthService;
 import com.example.util.JwtUtil;
+import com.example.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -59,10 +62,10 @@ public class AuthServiceImpl implements AuthService {
      * 短信验证码登录
      * 1. 从 Redis 取出验证码校验
      * 2. 校验通过后，根据手机号查询用户（不存在则自动注册）
-     * 3. 生成 JWT Token 返回
+     * 3. 生成 JWT Token 并返回用户信息
      */
     @Override
-    public String smsLogin(SmsLoginDTO dto) {
+    public LoginResultVO smsLogin(SmsLoginDTO dto) {
         String phone = dto.getPhone();
         String code = dto.getCode();
 
@@ -93,6 +96,7 @@ public class AuthServiceImpl implements AuthService {
             user.setNickname("用户" + phone.substring(phone.length() - 4));
             user.setMobile(phone);
             user.setStatus(1);
+            user.setPassword(DigestUtils.md5DigestAsHex(PasswordUtil.generateRandomPassword().getBytes()));
             userRepository.insert(user);
 
             // 重新查询获取ID
@@ -104,25 +108,30 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessException(401, "账号已被禁用");
         }
 
-        // 生成 Token
-        return JwtUtil.generateToken(user.getId());
+        // 组装登录结果
+        LoginResultVO result = new LoginResultVO();
+        result.setToken(JwtUtil.generateToken(user.getId(), "sms"));
+        result.setUserId(user.getId());
+        result.setPhone(user.getMobile());
+        result.setNickname(user.getNickname());
+        return result;
     }
 
     @Override
-    public String wxLogin(WxLoginDTO dto) {
-        // TODO: 调用微信接口换取 openid，查询/创建用户，生成 Token
+    public LoginResultVO wxLogin(WxLoginDTO dto) {
+        // TODO: 调用微信接口换取 openid，查询/创建用户，生成 Token（loginType = "wx"）
         throw new BusinessException(501, "微信登录功能暂未实现");
     }
 
     @Override
-    public String aliLogin(AliLoginDTO dto) {
-        // TODO: 调用支付宝接口换取 userId，查询/创建用户，生成 Token
+    public LoginResultVO aliLogin(AliLoginDTO dto) {
+        // TODO: 调用支付宝接口换取 userId，查询/创建用户，生成 Token（loginType = "ali"）
         throw new BusinessException(501, "支付宝登录功能暂未实现");
     }
 
     @Override
-    public String ttLogin(TtLoginDTO dto) {
-        // TODO: 调用抖音接口换取 openid，查询/创建用户，生成 Token
+    public LoginResultVO ttLogin(TtLoginDTO dto) {
+        // TODO: 调用抖音接口换取 openid，查询/创建用户，生成 Token（loginType = "tt"）
         throw new BusinessException(501, "抖音登录功能暂未实现");
     }
 }

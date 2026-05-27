@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.common.result.Result;
 import com.example.entity.dto.*;
+import com.example.entity.vo.LoginResultVO;
 import com.example.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,44 +32,44 @@ public class AuthController {
     /**
      * 短信验证码登录
      * @param dto 手机号 + 验证码
-     * @return JWT Token
+     * @return 登录结果（token + 用户信息）
      */
     @PostMapping("/login/sms")
-    public Result<String> smsLogin(@RequestBody SmsLoginDTO dto) {
-        String token = authService.smsLogin(dto);
-        return Result.success(token);
+    public Result<LoginResultVO> smsLogin(@RequestBody SmsLoginDTO dto) {
+        LoginResultVO result = authService.smsLogin(dto);
+        return Result.success(result);
     }
 
     /**
      * 微信登录
      * @param dto 微信 code
-     * @return JWT Token
+     * @return 登录结果（token + 用户信息）
      */
     @PostMapping("/login/wx")
-    public Result<String> wxLogin(@RequestBody WxLoginDTO dto) {
-        String token = authService.wxLogin(dto);
-        return Result.success(token);
+    public Result<LoginResultVO> wxLogin(@RequestBody WxLoginDTO dto) {
+        LoginResultVO result = authService.wxLogin(dto);
+        return Result.success(result);
     }
 
     /**
      * 支付宝登录
      * @param dto 支付宝 authCode
-     * @return JWT Token
+     * @return 登录结果（token + 用户信息）
      */
     @PostMapping("/login/ali")
-    public Result<String> aliLogin(@RequestBody AliLoginDTO dto) {
-        String token = authService.aliLogin(dto);
-        return Result.success(token);
+    public Result<LoginResultVO> aliLogin(@RequestBody AliLoginDTO dto) {
+        LoginResultVO result = authService.aliLogin(dto);
+        return Result.success(result);
     }
 
     /**
      * 抖音登录
      * @param dto 抖音 code
-     * @return JWT Token
+     * @return 登录结果（token + 用户信息）
      */
     @PostMapping("/login/tt")
-    public Result<String> ttLogin(@RequestBody TtLoginDTO dto) {
-        String token = authService.ttLogin(dto);
-        return Result.success(token);
+    public Result<LoginResultVO> ttLogin(@RequestBody TtLoginDTO dto) {
+        LoginResultVO result = authService.ttLogin(dto);
+        return Result.success(result);
     }
 }

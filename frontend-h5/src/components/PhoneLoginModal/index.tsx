@@ -46,7 +46,7 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
     setLoading(true)
     try {
       const res: any = await userApi.smsLogin({ phone, code })
-      const token = res?.token ?? res?.data?.token
+      const token = res?.token
       if (token) {
         setToken(token)
         setVisible(false)
