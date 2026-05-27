@@ -13,8 +13,9 @@ public interface AuthService {
     /**
      * 发送短信验证码
      * @param dto 手机号
+     * @param clientIp 客户端 IP
      */
-    void sendSmsCode(SmsSendDTO dto);
+    void sendSmsCode(SmsSendDTO dto, String clientIp);
 
     /**
      * 短信验证码登录

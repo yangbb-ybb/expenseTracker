@@ -8,6 +8,7 @@
 /Users/qidianyun/Documents/company/myApp/admin/backend/src/main/java/com/example/entity/dto/SmsLoginDTO.java
 /Users/qidianyun/Documents/company/myApp/admin/backend/src/main/java/com/example/config/CorsConfig.java
 /Users/qidianyun/Documents/company/myApp/admin/backend/src/main/java/com/example/entity/dto/AliLoginDTO.java
+/Users/qidianyun/Documents/company/myApp/admin/backend/src/main/java/com/example/config/JacksonConfig.java
 /Users/qidianyun/Documents/company/myApp/admin/backend/src/main/java/com/example/entity/dto/UserLoginDTO.java
 /Users/qidianyun/Documents/company/myApp/admin/backend/src/main/java/com/example/service/impl/UserServiceImpl.java
 /Users/qidianyun/Documents/company/myApp/admin/backend/src/main/java/com/example/repository/UserRepository.java

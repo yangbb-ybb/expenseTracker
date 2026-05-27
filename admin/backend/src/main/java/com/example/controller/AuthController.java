@@ -4,6 +4,7 @@ import com.example.common.result.Result;
 import com.example.entity.dto.*;
 import com.example.entity.vo.LoginResultVO;
 import com.example.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +22,33 @@ public class AuthController {
     /**
      * 发送短信验证码
      * @param dto 手机号
+     * @param request HTTP 请求（获取客户端 IP）
      * @return 无数据
      */
     @PostMapping("/sms/send")
-    public Result<Void> sendSms(@RequestBody SmsSendDTO dto) {
-        authService.sendSmsCode(dto);
+    public Result<Void> sendSms(@RequestBody SmsSendDTO dto, HttpServletRequest request) {
+        String clientIp = getClientIp(request);
+        authService.sendSmsCode(dto, clientIp);
         return Result.success();
+    }
+
+    /**
+     * 获取客户端真实 IP
+     * 优先读取 X-Forwarded-For、X-Real-IP 请求头（反向代理场景）
+     */
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Real-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        // X-Forwarded-For 可能包含多个 IP，取第一个
+        if (ip != null && ip.contains(",")) {
+            ip = ip.split(",")[0].trim();
+        }
+        return ip;
     }
 
     /**

@@ -18,6 +18,7 @@ import org.springframework.util.DigestUtils;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * 认证服务实现类
@@ -27,11 +28,22 @@ public class AuthServiceImpl implements AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
+    /** 手机号正则 */
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
+
     /** Redis Key 前缀 */
     private static final String SMS_CODE_KEY = "sms:code:";
+    private static final String SMS_FREQ_KEY = "sms:freq:";
+    private static final String SMS_IP_KEY = "sms:ip:";
 
     /** 验证码有效期：5分钟 */
     private static final long SMS_CODE_EXPIRE = 5;
+
+    /** 发送冷却时间：60秒 */
+    private static final long SMS_COOLDOWN_SECONDS = 60;
+
+    /** 同一 IP 60 秒内最多发送次数 */
+    private static final int SMS_IP_MAX_COUNT = 5;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -41,21 +53,55 @@ public class AuthServiceImpl implements AuthService {
 
     /**
      * 发送短信验证码
-     * 模拟实现：生成6位随机码存入 Redis，同时打印到日志
+     * 1. 校验手机号格式
+     * 2. 检查发送频率（同一手机号 60 秒内不能重复）
+     * 3. 检查 IP 防刷（同一 IP 60 秒内最多 5 次）
+     * 4. 生成验证码并存入 Redis
      */
     @Override
-    public void sendSmsCode(SmsSendDTO dto) {
+    public void sendSmsCode(SmsSendDTO dto, String clientIp) {
         String phone = dto.getPhone();
 
-        // 生成6位数字验证码
+        // 1. 校验手机号格式
+        if (phone == null || !PHONE_PATTERN.matcher(phone).matches()) {
+            throw new BusinessException(400, "手机号格式不正确");
+        }
+
+        // 2. 检查手机号发送频率（60 秒内是否已发送）
+        String freqKey = SMS_FREQ_KEY + phone;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(freqKey))) {
+            Long ttl = redisTemplate.getExpire(freqKey, TimeUnit.SECONDS);
+            long remain = ttl != null ? ttl : SMS_COOLDOWN_SECONDS;
+            throw new BusinessException(400, "验证码已发送，请" + remain + "秒后再试");
+        }
+
+        // 3. 检查 IP 防刷（同一 IP 60 秒内最多 5 次）
+        if (clientIp != null && !clientIp.isEmpty()) {
+            String ipKey = SMS_IP_KEY + clientIp;
+            String ipCount = redisTemplate.opsForValue().get(ipKey);
+            if (ipCount != null) {
+                int count = Integer.parseInt(ipCount);
+                if (count >= SMS_IP_MAX_COUNT) {
+                    throw new BusinessException(400, "发送过于频繁，请稍后再试");
+                }
+                redisTemplate.opsForValue().increment(ipKey);
+            } else {
+                redisTemplate.opsForValue().set(ipKey, "1", SMS_COOLDOWN_SECONDS, TimeUnit.SECONDS);
+            }
+        }
+
+        // 4. 生成6位数字验证码
         String code = String.format("%06d", new Random().nextInt(1000000));
 
-        // 存入 Redis，5分钟过期
+        // 5. 存入 Redis，5分钟过期
         String key = SMS_CODE_KEY + phone;
         redisTemplate.opsForValue().set(key, code, SMS_CODE_EXPIRE, TimeUnit.MINUTES);
 
+        // 6. 记录手机号发送频率（60 秒内禁止重复发送）
+        redisTemplate.opsForValue().set(freqKey, "1", SMS_COOLDOWN_SECONDS, TimeUnit.SECONDS);
+
         // TODO: 接入真实短信服务商（阿里云、腾讯云等）
-        log.info("【短信验证码】手机号：{}，验证码：{}，有效期5分钟", phone, code);
+        log.info("【短信验证码】手机号：{}，验证码：{}，IP：{}，有效期5分钟", phone, code, clientIp);
     }
 
     /**
