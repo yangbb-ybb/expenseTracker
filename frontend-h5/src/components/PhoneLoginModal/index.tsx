@@ -4,6 +4,11 @@ import { Popup, Input, Button } from '@nutui/nutui-react-taro'
 import { userApi } from '@/api'
 import { setToken } from '@/utils/auth'
 
+const btnPrimaryStyle = {
+  background: 'var(--theme-primary)',
+  borderColor: 'var(--theme-primary)',
+}
+
 interface Props {
   onSuccess: (token: string) => void
   onCancel: () => void
@@ -28,8 +33,8 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
     try {
       await userApi.sendSms({ phone })
       Taro.showToast({ title: '验证码已发送', icon: 'none' })
-    } catch {
-      Taro.showToast({ title: '发送失败', icon: 'none' })
+    } catch (err: any) {
+      Taro.showToast({ title: err?.message || '发送失败', icon: 'none' })
     }
   }
 
@@ -49,8 +54,8 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
       } else {
         Taro.showToast({ title: '登录失败', icon: 'none' })
       }
-    } catch {
-      Taro.showToast({ title: '登录失败', icon: 'none' })
+    } catch (err: any) {
+      Taro.showToast({ title: err?.message || '登录失败', icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -62,12 +67,21 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
       onClose={close}
       closeable
       position="center"
+      round
+      style={{ width: 340 }}
     >
-      <div style={{ padding: 28, width: '80vw', maxWidth: 360, minWidth: 280, boxSizing: 'border-box' }}>
-        <h3 style={{ margin: '0 0 24px', fontSize: 18, textAlign: 'center', fontWeight: 600 }}>
+      <div style={{ padding: 28, boxSizing: 'border-box' }}>
+        <h3 style={{
+          margin: '0 0 24px',
+          fontSize: 18,
+          textAlign: 'center',
+          fontWeight: 600,
+          color: 'var(--theme-text)',
+        }}>
           手机号登录
         </h3>
-        <div style={{ marginBottom: 16, border: '1px solid #e8e8e8', borderRadius: 8, padding: '4px 8px' }}>
+
+        <div style={{ marginBottom: 16 }}>
           <Input
             placeholder="请输入手机号"
             type="tel"
@@ -75,8 +89,9 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
             onChange={(val: string) => setPhone(val)}
           />
         </div>
-        <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-          <div style={{ flex: 1, border: '1px solid #e8e8e8', borderRadius: 8, padding: '4px 8px' }}>
+
+        <div style={{ display: 'flex', gap: 10, marginBottom: 24, alignItems: 'center' }}>
+          <div style={{ flex: 1 }}>
             <Input
               placeholder="请输入验证码"
               type="number"
@@ -88,16 +103,18 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
             type="primary"
             size="small"
             onClick={handleSendSms}
-            style={{ height: 40, alignSelf: 'center' }}
+            style={{ ...btnPrimaryStyle, borderRadius: 8, height: 40, width: 80, flexShrink: 0 }}
           >
             获取验证码
           </Button>
         </div>
+
         <Button
           type="primary"
           block
           loading={loading}
           onClick={handleLogin}
+          style={{ ...btnPrimaryStyle, borderRadius: 8, height: 44 }}
         >
           登录
         </Button>

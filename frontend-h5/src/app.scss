@@ -1,3 +1,32 @@
+/* ===== 项目主题变量（修改这里切换全局颜色） ===== */
+:root {
+  /* 主题色 */
+  --theme-primary: #1677ff;
+  --theme-primary-light: #4096ff;
+  --theme-primary-dark: #0958d9;
+
+  /* 功能色 */
+  --theme-success: #52c41a;
+  --theme-warning: #faad14;
+  --theme-danger: #f5222d;
+
+  /* 文字色 */
+  --theme-text: #333333;
+  --theme-text-secondary: #666666;
+  --theme-text-placeholder: #999999;
+
+  /* 边框、背景 */
+  --theme-border: #e8e8e8;
+  --theme-bg-page: #f7f8fa;
+  --theme-bg-white: #ffffff;
+}
+
+/* 覆盖 NutUI 按钮主色 */
+.nut-button--primary {
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -8,7 +37,7 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f7f8fa;
+  background: var(--theme-bg-page);
 }
 
 .page {
