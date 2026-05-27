@@ -2,8 +2,8 @@ package com.example.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.common.exception.BusinessException;
-import com.example.entity.dto.UserLoginDTO;
-import com.example.entity.dto.UserRegisterDTO;
+import com.example.entity.dto.user.UserLoginDTO;
+import com.example.entity.dto.user.UserRegisterDTO;
 import com.example.entity.po.User;
 import com.example.entity.vo.UserInfoVO;
 import com.example.repository.UserRepository;

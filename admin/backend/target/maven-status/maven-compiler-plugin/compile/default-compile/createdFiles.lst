@@ -1,0 +1,13 @@
+com/example/entity/dto/BalanceFreezeDTO.class
+com/example/entity/dto/UserLoginDTO.class
+com/example/entity/dto/UserRegisterDTO.class
+com/example/entity/dto/BalanceUnfreezeDTO.class
+com/example/entity/dto/AliLoginDTO.class
+com/example/entity/dto/BalanceRechargeDTO.class
+com/example/entity/dto/BalanceConsumeDTO.class
+com/example/entity/dto/TtLoginDTO.class
+com/example/entity/dto/TransactionRecordQueryDTO.class
+com/example/entity/dto/SmsLoginDTO.class
+com/example/entity/dto/SmsSendDTO.class
+com/example/entity/dto/BalanceRefundDTO.class
+com/example/entity/dto/WxLoginDTO.class

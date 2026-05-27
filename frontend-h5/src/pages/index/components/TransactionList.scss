@@ -1,31 +1,79 @@
 .transaction-list {
   margin-top: 12px;
   background: #fff;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 16px 8px;
-    border-bottom: 1px solid #f5f5f5;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid #f0f0f0;
   }
 
   &__title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 32px;
+      height: 3px;
+      background: linear-gradient(90deg, #1e88e5 0%, #2196f3 100%);
+      border-radius: 3px;
+    }
   }
 
   &__more {
-    font-size: 12px;
-    color: #999;
+    font-size: 13px;
+    color: #1e88e5;
+    font-weight: 500;
+  }
+
+  &__content {
+    .nut-cell {
+      padding: 16px 20px;
+      min-height: auto;
+      border-bottom: 1px solid #f5f5f5;
+      transition: background-color 0.2s ease;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:active {
+        background-color: #f9f9f9;
+      }
+
+      &__title {
+        font-size: 15px;
+        color: #333;
+        font-weight: 500;
+      }
+
+      &__description {
+        font-size: 12px;
+        color: #999;
+        margin-top: 4px;
+      }
+
+      &__link {
+        padding: 0;
+        min-height: auto;
+      }
+    }
   }
 
   &__amount {
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 700;
 
     &.income {
       color: #ee4d4d;

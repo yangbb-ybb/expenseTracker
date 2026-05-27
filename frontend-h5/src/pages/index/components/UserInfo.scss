@@ -1,47 +1,63 @@
 .user-info {
-  padding: 32px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 16px 32px;
+  background: linear-gradient(135deg, #1e88e5 0%, #2196f3 100%);
   color: #fff;
+  border-radius: 16px;
+  margin: 16px;
 
   &__header {
     display: flex;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
   }
 
   &__info {
     margin-left: 16px;
+    flex: 1;
   }
 
   &__name {
     display: block;
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
   }
 
   &__id {
     display: block;
-    font-size: 12px;
-    opacity: 0.8;
-    margin-top: 4px;
+    font-size: 13px;
+    opacity: 0.85;
+    margin-top: 6px;
+    line-height: 1.4;
   }
 
   &__balance {
     background: rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    padding: 16px 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 20px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.3s ease;
+
+    &:active {
+      transform: scale(0.98);
+      background: rgba(255, 255, 255, 0.15);
+    }
   }
 
   &__balance-label {
     font-size: 14px;
     opacity: 0.9;
+    font-weight: 500;
   }
 
   &__balance-value {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
   }
 }

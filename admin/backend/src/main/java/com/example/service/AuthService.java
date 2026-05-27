@@ -1,6 +1,7 @@
 package com.example.service;
 
-import com.example.entity.dto.*;
+import com.example.entity.dto.auth.*;
+import com.example.entity.dto.user.UserLoginDTO;
 import com.example.entity.vo.LoginResultVO;
 
 /**

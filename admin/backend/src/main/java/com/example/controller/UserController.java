@@ -1,8 +1,8 @@
 package com.example.controller;
 
 import com.example.common.result.Result;
-import com.example.entity.dto.UserLoginDTO;
-import com.example.entity.dto.UserRegisterDTO;
+import com.example.entity.dto.user.UserLoginDTO;
+import com.example.entity.dto.user.UserRegisterDTO;
 import com.example.entity.vo.UserInfoVO;
 import com.example.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;

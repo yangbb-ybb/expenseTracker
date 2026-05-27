@@ -13,7 +13,7 @@ interface UserInfoProps {
 
 export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
   const [userInfo, setUserInfo] = useState({
-    username: username || '加载中...',
+    username: username || '用户',
     avatar: avatar || '',
     balance: balance || '0.00'
   })

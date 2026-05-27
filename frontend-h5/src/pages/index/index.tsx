@@ -8,7 +8,7 @@ export default function Index() {
   return (
     <ConfigProvider>
       <View className='page'>
-        <UserInfo username='张三' balance='1,288.50' />
+        <UserInfo />
         <TransactionList />
       </View>
     </ConfigProvider>
