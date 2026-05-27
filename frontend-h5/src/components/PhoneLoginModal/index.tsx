@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import { Popup, Input, Button } from '@nutui/nutui-react-taro'
 import { userApi } from '@/api'
@@ -14,11 +14,23 @@ interface Props {
   onCancel: () => void
 }
 
+/** 验证码倒计时秒数 */
+const COUNTDOWN_SECONDS = 60
+
 export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
   const [visible, setVisible] = useState(true)
   const [phone, setPhone] = useState('')
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
+  const [countdown, setCountdown] = useState(0)
+
+  useEffect(() => {
+    if (countdown <= 0) return
+    const timer = setInterval(() => {
+      setCountdown((c) => c - 1)
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [countdown])
 
   const close = () => {
     setVisible(false)
@@ -32,6 +44,7 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
     }
     try {
       await userApi.sendSms({ phone })
+      setCountdown(COUNTDOWN_SECONDS)
       Taro.showToast({ title: '验证码已发送', icon: 'none' })
     } catch (err: any) {
       Taro.showToast({ title: err?.message || '发送失败', icon: 'none' })
@@ -47,6 +60,7 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
     try {
       const res: any = await userApi.smsLogin({ phone, code })
       const token = res?.token
+      console.log(res);
       if (token) {
         setToken(token)
         setVisible(false)
@@ -102,10 +116,11 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
           <Button
             type="primary"
             size="small"
+            disabled={countdown > 0}
             onClick={handleSendSms}
-            style={{ ...btnPrimaryStyle, borderRadius: 8, height: 40, width: 80, flexShrink: 0 }}
+            style={{ ...btnPrimaryStyle, borderRadius: 8, height: 40, width: 90, flexShrink: 0 }}
           >
-            获取验证码
+            {countdown > 0 ? `${countdown}S后重发` : '获取验证码'}
           </Button>
         </div>
 

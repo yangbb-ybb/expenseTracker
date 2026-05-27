@@ -5,6 +5,7 @@ import com.example.entity.dto.UserLoginDTO;
 import com.example.entity.dto.UserRegisterDTO;
 import com.example.entity.vo.UserInfoVO;
 import com.example.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -74,15 +75,16 @@ public class UserController {
     /**
      * 获取用户信息接口
      *
-     * @GetMapping("/info")        处理 GET 请求，路径：/user/info
-     * @RequestParam("userId")    从请求参数获取 userId
-     *                            示例：GET /user/info?userId=1
+     * @GetMapping("/info")  处理 GET 请求，路径：/user/info
+     * 从请求属性中获取 userId（JwtInterceptor 解析 token 后存入）
      *
-     * @param userId 用户ID
+     * @param request HTTP 请求
      * @return 用户信息
      */
     @GetMapping("/info")
-    public Result<UserInfoVO> getUserInfo(@RequestParam Long userId) {
+    public Result<UserInfoVO> getUserInfo(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+
         // 调用 Service 获取用户信息
         UserInfoVO userInfo = userService.getUserInfo(userId);
 
