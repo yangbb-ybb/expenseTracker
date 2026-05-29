@@ -3,6 +3,7 @@ import { Avatar } from '@nutui/nutui-react-taro'
 import { useEffect, useState } from 'react'
 import { userApi } from '@/api'
 import { ensureLoggedIn } from '@/utils/auth'
+import { maskPhone } from '@/utils/format'
 import './UserInfo.scss'
 
 interface UserInfoProps {
@@ -24,12 +25,13 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
       try {
         await ensureLoggedIn()
         const res: any = await userApi.getUserInfo()
-        if (res?.data) {
+        console.log(res);
+        if (res?.id) {
           setUserInfo({
-            username: res.data.username || '用户',
-            avatar: res.data.avatar || '',
-            balance: res.data.balance || '0.00',
-            id: res.data.id || ''
+            username: res.username || '用户',
+            avatar: res.avatar || '',
+            balance: res.balance || '0.00',
+            id: res.id || ''
           })
         }
       } catch {
@@ -43,16 +45,14 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
   return (
     <View className='user-info'>
       <View className='user-info__header'>
-        <Avatar size='large' src={userInfo.avatar}>
-          {userInfo.username.slice(0, 1).toUpperCase()}
-        </Avatar>
+        <Avatar size='large' src={userInfo.avatar || 'https://sh.189.cn/service/images/points/newItem/1779345844386_136.png'}></Avatar>
         <View className='user-info__info'>
-          <Text className='user-info__name'>{userInfo.username}</Text>
+          <Text className='user-info__name'>{maskPhone(userInfo.username)}</Text>
           {userInfo.id && <Text className='user-info__id'>ID: {userInfo.id}</Text>}
         </View>
       </View>
       <View className='user-info__balance'>
-        <Text className='user-info__balance-label'>账户余额</Text>
+        <Text className='user-info__balance-label'>总支出</Text>
         <Text className='user-info__balance-value'>¥ {userInfo.balance}</Text>
       </View>
     </View>
