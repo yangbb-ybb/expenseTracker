@@ -1,9 +1,9 @@
 .transaction-list {
-  margin-top: 12px;
   background: #fff;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: -12px -16px -12px;
 
   &__header {
     display: flex;
@@ -71,16 +71,30 @@
     }
   }
 
+  &__item {
+    &.income {
+      .nut-cell__title {
+        color: #4d994d;
+      }
+    }
+
+    &.expense {
+      .nut-cell__title {
+        color: #ee4d4d;
+      }
+    }
+  }
+
   &__amount {
     font-size: 16px;
     font-weight: 700;
 
     &.income {
-      color: #ee4d4d;
+      color: #4d994d;
     }
 
     &.expense {
-      color: #4d994d;
+      color: #ee4d4d;
     }
   }
 }

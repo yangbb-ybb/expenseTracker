@@ -6,7 +6,7 @@ export default defineConfig((merge) => {
   const baseConfig = {
     projectName: 'frontend-h5',
     date: '2026-03-26',
-    designWidth: 375,
+    designWidth: 750,
     deviceRatio: {
       640: 2.34 / 2,
       750: 1,
@@ -64,6 +64,12 @@ export default defineConfig((merge) => {
         autoprefixer: {
           enable: true,
           config: {}
+        },
+        pxtransform: {
+          enable: true,
+          config: {
+            selectorBlackList: ['nut-']
+          }
         },
         cssModules: {
           enable: false,

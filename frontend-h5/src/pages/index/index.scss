@@ -1,6 +1,14 @@
 .page {
   min-height: 100vh;
-  background: #fff;
-  padding: 16px 16px 32px;
+  background: #f7f7f7;
+  padding: 16px;
   position: relative;
+}
+
+.page > * {
+  margin-bottom: 12px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }

@@ -32,6 +32,7 @@ export default function TransactionList({ list = defaultList }: TransactionListP
         {list.map((item) => (
           <Cell
             key={item.id}
+            className={`transaction-list__item ${item.type}`}
             title={item.title}
             description={item.time}
             extra={

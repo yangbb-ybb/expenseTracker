@@ -5,6 +5,9 @@ export default {
   defineConstants: {},
   mini: {},
   h5: {
+    miniCssExtractPluginOption: {
+      ignoreOrder: true
+    },
     minify: {
       enable: true,
       terser: {
