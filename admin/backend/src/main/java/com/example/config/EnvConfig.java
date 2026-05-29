@@ -40,6 +40,20 @@ public class EnvConfig {
         System.out.println("===========================================");
         System.out.println("当前环境: " + ENVIRONMENT);
         System.out.println("数据库配置: application-" + ENVIRONMENT + ".yml");
+        System.out.println("API Base URL: http://localhost:8080/api");
+        System.out.println("用户登录:    POST /api/user/login");
+        System.out.println("用户注册:    POST /api/user/register");
+        System.out.println("用户信息:    GET  /api/user/info");
+        System.out.println("余额充值:    POST /api/userBalance/recharge");
+        System.out.println("余额消费:    POST /api/userBalance/consume");
+        System.out.println("余额冻结:    POST /api/userBalance/freeze");
+        System.out.println("余额解冻:    POST /api/userBalance/unfreeze");
+        System.out.println("余额转账:    POST /api/userBalance/transfer");
+        System.out.println("余额退款:    POST /api/userBalance/refund");
+        System.out.println("发送验证码:  POST /api/authSms/send");
+        System.out.println("短信登录:    POST /api/authLogin/sms");
+        System.out.println("消费明细:    POST /api/userDailyConsumeDetail");
+        System.out.println("接口文档:    浏览器访问 /api/doc.html");
         System.out.println("===========================================");
     }
 }

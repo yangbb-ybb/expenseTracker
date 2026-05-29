@@ -1,7 +1,9 @@
 package com.example.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.entity.dto.consume.UserDailyConsumeDetailQueryDTO;
 import com.example.entity.po.UserDailyConsumeDetail;
-import java.util.List;
 
 /**
  * 用户每日消费明细业务接口
@@ -16,7 +18,7 @@ public interface UserDailyConsumeDetailService {
      * @param dto 消费明细数据
      * @return 创建成功的记录
      */
-    UserDailyConsumeDetail addConsumeDetail(com.example.entity.dto.UserDailyConsumeDetailDTO dto);
+    UserDailyConsumeDetail addConsumeDetail(com.example.entity.dto.consume.UserDailyConsumeDetailDTO dto);
 
     /**
      * 删除消费明细（软删除）
@@ -32,7 +34,7 @@ public interface UserDailyConsumeDetailService {
      * @param dto 消费明细数据
      * @return 更新成功的记录
      */
-    UserDailyConsumeDetail updateConsumeDetail(com.example.entity.dto.UserDailyConsumeDetailDTO dto);
+    UserDailyConsumeDetail updateConsumeDetail(com.example.entity.dto.consume.UserDailyConsumeDetailDTO dto);
 
     /**
      * 根据ID查询消费明细
@@ -43,11 +45,11 @@ public interface UserDailyConsumeDetailService {
     UserDailyConsumeDetail getById(Long id);
 
     /**
-     * 根据用户和日期查询消费明细列表（不包含已删除的）
+     * 根据用户和日期查询消费明细列表（不包含已删除的，分页）
      *
      * @param userId     用户ID
-     * @param consumeDate 消费日期（格式：yyyy-MM-dd）
-     * @return 消费明细列表
+     * @param queryDTO   查询参数
+     * @return 消费明细列表（分页）
      */
-    List<UserDailyConsumeDetail> getListByUserAndDate(Long userId, String consumeDate);
+    IPage<UserDailyConsumeDetail> getListByUserAndDate(Long userId, UserDailyConsumeDetailQueryDTO queryDTO);
 }

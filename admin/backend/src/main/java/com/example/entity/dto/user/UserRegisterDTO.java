@@ -1,4 +1,4 @@
-package com.example.entity.dto;
+package com.example.entity.dto.user;
 
 /**
  * 用户注册 DTO

@@ -26,7 +26,7 @@ public class AuthController {
      * @param request HTTP 请求（获取客户端 IP）
      * @return 无数据
      */
-    @PostMapping("/sms/send")
+    @PostMapping("/authSms/send")
     public Result<Void> sendSms(@RequestBody SmsSendDTO dto, HttpServletRequest request) {
         String clientIp = getClientIp(request);
         authService.sendSmsCode(dto, clientIp);
@@ -57,7 +57,7 @@ public class AuthController {
      * @param dto 手机号 + 验证码
      * @return 登录结果（token + 用户信息）
      */
-    @PostMapping("/login/sms")
+    @PostMapping("/authLogin/sms")
     public Result<LoginResultVO> smsLogin(@RequestBody SmsLoginDTO dto) {
         LoginResultVO result = authService.smsLogin(dto);
         return Result.success(result);
@@ -68,7 +68,7 @@ public class AuthController {
      * @param dto 微信 code
      * @return 登录结果（token + 用户信息）
      */
-    @PostMapping("/login/wx")
+    @PostMapping("/authLogin/wx")
     public Result<LoginResultVO> wxLogin(@RequestBody WxLoginDTO dto) {
         LoginResultVO result = authService.wxLogin(dto);
         return Result.success(result);
@@ -79,7 +79,7 @@ public class AuthController {
      * @param dto 支付宝 authCode
      * @return 登录结果（token + 用户信息）
      */
-    @PostMapping("/login/ali")
+    @PostMapping("/authLogin/ali")
     public Result<LoginResultVO> aliLogin(@RequestBody AliLoginDTO dto) {
         LoginResultVO result = authService.aliLogin(dto);
         return Result.success(result);
@@ -90,7 +90,7 @@ public class AuthController {
      * @param dto 抖音 code
      * @return 登录结果（token + 用户信息）
      */
-    @PostMapping("/login/tt")
+    @PostMapping("/authLogin/tt")
     public Result<LoginResultVO> ttLogin(@RequestBody TtLoginDTO dto) {
         LoginResultVO result = authService.ttLogin(dto);
         return Result.success(result);

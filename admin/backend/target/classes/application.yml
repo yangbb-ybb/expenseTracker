@@ -3,22 +3,40 @@
 # =====================================================
 # 可选值：dev | test | prod
 # 接手项目的人只需要修改这一行即可
+#
+# 环境说明：
+#   - dev:  本地开发环境（127.0.0.1:3306）
+#   - test: 测试环境（测试服务器）
+#   - prod: 生产环境（真实数据库）
+#
+# 接口文档地址：
+#   - Swagger UI: http://localhost:8080/api/doc.html
+#   - OpenAPI: http://localhost:8080/api/v3/api-docs
+#
+# API 接口（小驼峰命名）：
+#   - 用户登录:    POST /api/user/login
+#   - 用户注册:    POST /api/user/register
+#   - 用户信息:    GET  /api/user/info
+#   - 余额充值:    POST /api/userBalance/recharge
+#   - 余额消费:    POST /api/userBalance/consume
+#   - 余额冻结:    POST /api/userBalance/freeze
+#   - 余额解冻:    POST /api/userBalance/unfreeze
+#   - 余额转账:    POST /api/userBalance/transfer
+#   - 余额退款:    POST /api/userBalance/refund
+#   - 发送验证码:  POST /api/authSms/send
+#   - 短信登录:    POST /api/authLogin/sms
+#   - 消费明细:    POST /api/userDailyConsumeDetail
+# =====================================================
+
+# ========== 以下是公共配置，各环境通用 ==========
+
 spring:
   profiles:
     active: dev
 
   application:
     name: backend
-# =====================================================
 
-# ========== 以下是公共配置，各环境通用 ==========
-
-server:
-  port: 8080
-  servlet:
-    context-path: /api
-
-  # Redis 配置（各环境可能不同，在对应 yml 中覆盖）
   data:
     redis:
       host: localhost
@@ -26,6 +44,11 @@ server:
       password:
       database: 0
       timeout: 5000
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml

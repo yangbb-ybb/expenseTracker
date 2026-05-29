@@ -1,5 +1,8 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.entity.dto.consume.UserDailyConsumeDetailQueryDTO;
 import com.example.entity.po.UserDailyConsumeDetail;
 import com.example.repository.UserDailyConsumeDetailRepository;
 import com.example.service.UserDailyConsumeDetailService;
@@ -10,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -26,7 +28,7 @@ public class UserDailyConsumeDetailServiceImpl implements UserDailyConsumeDetail
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public UserDailyConsumeDetail addConsumeDetail(com.example.entity.dto.UserDailyConsumeDetailDTO dto) {
+    public UserDailyConsumeDetail addConsumeDetail(com.example.entity.dto.consume.UserDailyConsumeDetailDTO dto) {
         // 检查是否存在相同的记录（用户+日期+类型+分类）
         UserDailyConsumeDetail existing = repository.selectOne(
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<UserDailyConsumeDetail>()
@@ -77,7 +79,7 @@ public class UserDailyConsumeDetailServiceImpl implements UserDailyConsumeDetail
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public UserDailyConsumeDetail updateConsumeDetail(com.example.entity.dto.UserDailyConsumeDetailDTO dto) {
+    public UserDailyConsumeDetail updateConsumeDetail(com.example.entity.dto.consume.UserDailyConsumeDetailDTO dto) {
         if (dto.getId() == null) {
             throw new IllegalArgumentException("更新时必须提供ID");
         }
@@ -105,13 +107,28 @@ public class UserDailyConsumeDetailServiceImpl implements UserDailyConsumeDetail
     }
 
     @Override
-    public List<UserDailyConsumeDetail> getListByUserAndDate(Long userId, String consumeDate) {
-        return repository.selectList(
-                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<UserDailyConsumeDetail>()
-                        .eq(UserDailyConsumeDetail::getUserId, userId)
-                        .eq(UserDailyConsumeDetail::getConsumeDate, LocalDate.parse(consumeDate))
-                        .eq(UserDailyConsumeDetail::getIsDeleted, 0)
-                        .orderByDesc(UserDailyConsumeDetail::getConsumeAmount)
-        );
+    public IPage<UserDailyConsumeDetail> getListByUserAndDate(Long userId, UserDailyConsumeDetailQueryDTO queryDTO) {
+        com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<UserDailyConsumeDetail> wrapper =
+                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<>();
+
+        wrapper.eq(UserDailyConsumeDetail::getUserId, userId);
+        wrapper.eq(UserDailyConsumeDetail::getIsDeleted, 0);
+
+        // 如果指定了日期，按日期查询
+        if (queryDTO.getConsumeDate() != null && !queryDTO.getConsumeDate().isEmpty()) {
+            try {
+                LocalDate date = LocalDate.parse(queryDTO.getConsumeDate());
+                wrapper.eq(UserDailyConsumeDetail::getConsumeDate, date);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("日期格式错误，应为：yyyy-MM-dd");
+            }
+        }
+
+        // 排序
+        wrapper.orderByDesc(UserDailyConsumeDetail::getConsumeAmount);
+
+        // 分页查询
+        Page<UserDailyConsumeDetail> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());
+        return repository.selectPage(page, wrapper);
     }
 }

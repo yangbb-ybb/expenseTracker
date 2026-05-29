@@ -1,4 +1,4 @@
-package com.example.entity.dto;
+package com.example.entity.dto.user;
 
 /**
  * 用户登录 DTO（Data Transfer Object，数据传输对象）

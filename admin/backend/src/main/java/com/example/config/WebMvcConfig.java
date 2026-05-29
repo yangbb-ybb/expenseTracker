@@ -11,12 +11,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 作用：配置 Spring MVC 的一些选项
  *   - 添加拦截器（Interceptor）
  *   - 配置静态资源处理
- *   - 配置视图控制器
  *
  * @WebMvcConfigurer Spring MVC 配置接口
  *                   实现此接口可以自定义 Spring MVC 配置
  */
-@Configuration  // 标记为配置类
+@Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
@@ -36,11 +35,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // addPathPatterns("/**") 表示拦截所有请求
         // excludePathPatterns(...) 表示排除哪些路径不拦截
         registry.addInterceptor(jwtInterceptor)
-                // 拦截所有请求
-                .addPathPatterns("/**")
-                // 排除登录和注册接口（这些接口不需要 Token）
+                // 拦截所有请求（基于 context-path: /api 之后的路径）
+                .addPathPatterns("/user/**")
+                .addPathPatterns("/userDailyConsumeDetail/**")
+                // 排除不需要 Token 的路径
                 .excludePathPatterns("/user/login", "/user/register")
-                .excludePathPatterns("/sms/send", "/login/sms", "/login/wx", "/login/ali", "/login/tt")
+                .excludePathPatterns("/authSms/send", "/authLogin/sms", "/authLogin/wx", "/authLogin/ali", "/authLogin/tt")
+                .excludePathPatterns("/userBalance/**")
                 // 排除接口文档路径
                 .excludePathPatterns("/doc.html", "/swagger-ui/**", "/v3/api-docs/**");
     }

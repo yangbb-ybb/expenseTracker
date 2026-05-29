@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
  */
 @Tag(name = "余额管理", description = "用户余额充值、消费、退款、冻结、解冻等操作")
 @RestController
-@RequestMapping("/balance")
+@RequestMapping("/userBalance")
 public class BalanceController {
 
     @Resource
@@ -44,7 +44,7 @@ public class BalanceController {
     /**
      * 查询用户余额
      *
-     * GET /balance
+     * GET /userBalance
      *
      * @param userId     用户ID（作为查询参数传递）
      * @return           余额信息
@@ -66,7 +66,7 @@ public class BalanceController {
     /**
      * 充值
      *
-     * POST /balance/recharge
+     * POST /userBalance/recharge
      *
      * @param dto        充值参数
      * @return           操作结果
@@ -91,7 +91,7 @@ public class BalanceController {
     /**
      * 消费（扣款）
      *
-     * POST /balance/consume
+     * POST /userBalance/consume
      *
      * @param dto        消费参数
      * @return           操作结果
@@ -116,7 +116,7 @@ public class BalanceController {
     /**
      * 退款
      *
-     * POST /balance/refund
+     * POST /userBalance/refund
      *
      * @param dto        退款参数
      * @return           操作结果
@@ -141,7 +141,7 @@ public class BalanceController {
     /**
      * 冻结金额
      *
-     * POST /balance/freeze
+     * POST /userBalance/freeze
      *
      * @param dto        冻结参数
      * @return           操作结果
@@ -166,7 +166,7 @@ public class BalanceController {
     /**
      * 解冻金额
      *
-     * POST /balance/unfreeze
+     * POST /userBalance/unfreeze
      *
      * @param dto        解冻参数
      * @return           操作结果
@@ -191,7 +191,7 @@ public class BalanceController {
     /**
      * 查询交易流水（分页）
      *
-     * GET /balance/records
+     * GET /userBalance/records
      *
      * @param dto        流水查询参数
      * @return           流水记录列表（分页）
@@ -288,7 +288,7 @@ public class BalanceController {
     /**
      * 查询余额统计信息
      *
-     * GET /balance/statistics
+     * GET /userBalance/statistics
      *
      * @return           统计信息
      */

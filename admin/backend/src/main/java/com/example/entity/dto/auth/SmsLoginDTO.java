@@ -1,4 +1,4 @@
-package com.example.entity.dto;
+package com.example.entity.dto.auth;
 
 /**
  * 短信验证码登录 DTO

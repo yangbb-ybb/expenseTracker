@@ -1,16 +1,17 @@
 package com.example.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.common.result.Result;
-import com.example.entity.dto.UserDailyConsumeDetailDTO;
+import com.example.entity.dto.consume.UserDailyConsumeDetailDTO;
+import com.example.entity.dto.consume.UserDailyConsumeDetailQueryDTO;
 import com.example.entity.po.UserDailyConsumeDetail;
 import com.example.service.UserDailyConsumeDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 用户每日消费明细控制器
@@ -19,7 +20,7 @@ import java.util.List;
  */
 @Tag(name = "用户消费明细", description = "用户每日消费明细的增删改查")
 @RestController
-@RequestMapping("/daily-consume")
+@RequestMapping("/userDailyConsumeDetail")
 public class UserDailyConsumeDetailController {
 
     @Resource
@@ -28,7 +29,7 @@ public class UserDailyConsumeDetailController {
     /**
      * 添加消费明细
      *
-     * POST /daily-consume
+     * POST /userDailyConsumeDetail
      *
      * @param dto 消费明细数据
      * @return 消费明细记录
@@ -43,7 +44,7 @@ public class UserDailyConsumeDetailController {
     /**
      * 删除消费明细（软删除）
      *
-     * DELETE /daily-consume/{id}
+     * DELETE /userDailyConsumeDetail/{id}
      *
      * @param id 消费明细ID
      * @return 操作结果
@@ -62,7 +63,7 @@ public class UserDailyConsumeDetailController {
     /**
      * 修改消费明细
      *
-     * PUT /daily-consume
+     * PUT /userDailyConsumeDetail
      *
      * @param dto 消费明细数据
      * @return 更新后的消费明细记录
@@ -77,7 +78,7 @@ public class UserDailyConsumeDetailController {
     /**
      * 根据ID查询消费明细
      *
-     * GET /daily-consume/{id}
+     * GET /userDailyConsumeDetail/{id}
      *
      * @param id 消费明细ID
      * @return 消费明细记录
@@ -93,21 +94,27 @@ public class UserDailyConsumeDetailController {
     }
 
     /**
-     * 根据用户和日期查询消费明细列表
+     * 查询消费明细列表（分页）
      *
-     * GET /daily-consume/list
+     * GET /userDailyConsumeDetail/list
      *
-     * @param userId     用户ID
-     * @param consumeDate 消费日期（格式：yyyy-MM-dd）
-     * @return 消费明细列表
+     * @param request  HTTP 请求（用于获取 userId）
+     * @param queryDTO 消费明细查询参数（日期可选）
+     * @return 消费明细列表（分页）
      */
-    @Operation(summary = "查询消费明细列表", description = "根据用户和日期查询消费明细列表")
+    @Operation(summary = "查询消费明细列表", description = "分页查询用户消费明细列表，支持按日期筛选，userId 从 Token 中自动获取")
     @GetMapping("/list")
-    public Result<List<UserDailyConsumeDetail>> getList(
-            @RequestParam Long userId,
-            @RequestParam String consumeDate
+    public Result<IPage<UserDailyConsumeDetail>> getList(
+            HttpServletRequest request,
+            UserDailyConsumeDetailQueryDTO queryDTO
     ) {
-        List<UserDailyConsumeDetail> list = service.getListByUserAndDate(userId, consumeDate);
-        return Result.success(list);
+        // 从请求属性中获取 userId（由 JwtInterceptor 设置）
+        Long userId = (Long) request.getAttribute("userId");
+        if (userId == null) {
+            return Result.error("未登录或 Token 无效");
+        }
+
+        IPage<UserDailyConsumeDetail> page = service.getListByUserAndDate(userId, queryDTO);
+        return Result.success(page);
     }
 }

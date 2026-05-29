@@ -1,4 +1,4 @@
-package com.example.entity.dto;
+package com.example.entity.dto.auth;
 
 /**
  * 支付宝登录 DTO

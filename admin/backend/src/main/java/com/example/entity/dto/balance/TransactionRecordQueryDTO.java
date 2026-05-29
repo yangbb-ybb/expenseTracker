@@ -1,4 +1,4 @@
-package com.example.entity.dto;
+package com.example.entity.dto.balance;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
