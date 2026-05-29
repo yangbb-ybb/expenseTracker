@@ -1,4 +1,5 @@
 import http from '@/utils/request'
+import consumeApi from './consume'
 
 // 用户相关
 export const userApi = {
@@ -23,4 +24,4 @@ export const demoApi = {
   delete: (id: string) => http.delete(`/demo/${id}`)
 }
 
-export default { userApi, demoApi }
+export default { userApi, demoApi, consumeApi }

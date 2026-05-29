@@ -45,7 +45,7 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
   return (
     <View className='user-info'>
       <View className='user-info__header'>
-        <Avatar size='large' src={userInfo.avatar || 'https://sh.189.cn/service/images/points/newItem/1779345844386_136.png'}></Avatar>
+        <Avatar size='large' src={userInfo.avatar || ''}></Avatar>
         <View className='user-info__info'>
           <Text className='user-info__name'>{maskPhone(userInfo.username)}</Text>
           {userInfo.id && <Text className='user-info__id'>ID: {userInfo.id}</Text>}
