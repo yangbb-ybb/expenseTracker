@@ -26,7 +26,6 @@ export default function TransactionList({ list = defaultList }: TransactionListP
     <View className='transaction-list'>
       <View className='transaction-list__header'>
         <Text className='transaction-list__title'>交易明细</Text>
-        {/* <Text className='transaction-list__more'>查看全部</Text> */}
       </View>
       <View className='transaction-list__content'>
         {list.map((item) => (
