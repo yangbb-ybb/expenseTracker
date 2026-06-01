@@ -3,6 +3,7 @@ import { Popup, Radio, RadioGroup, Input, Button } from '@nutui/nutui-react-taro
 import Taro from '@tarojs/taro'
 import { useState, useEffect } from 'react'
 import './AddRecordPopup.scss'
+import style from './index.module.scss'
 
 interface AddRecordPopupProps {
   visible: boolean
@@ -82,7 +83,7 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
         <View className='add-record-content'>
           <View className='add-record-row'>
             <Text className='add-record-label'>类型</Text>
-            <RadioGroup className="custom-radio" value={type} direction="horizontal" onChange={(value: any) => setType(value as 'income' | 'expense')}>
+            <RadioGroup className={ `custom-radio ${style.radioBox}` } value={type} direction="horizontal" onChange={(value: any) => setType(value as 'income' | 'expense')}>
               <Radio value='expense'>支出</Radio>
               <Radio value='income'>收入</Radio>
             </RadioGroup>

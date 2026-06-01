@@ -1,24 +1,8 @@
 /* 组件A.module.scss */
 .radioBox {
-  color: red;
-
   :global {
-    .nut-radio__icon {
-      &--active {
-        color: var(--theme-primary) !important;
-        border-color: var(--theme-primary) !important;
-        background-color: white !important;
-      }
-    }
-
-    .nut-radio__icon--inner {
+    .nut-radio-icon-checked{
       background-color: var(--theme-primary) !important;
-    }
-
-    .nut-radio__label {
-      &--active {
-        color: var(--theme-primary) !important;
-      }
     }
   }
 }
