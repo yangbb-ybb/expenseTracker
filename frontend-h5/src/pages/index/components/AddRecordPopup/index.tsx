@@ -21,6 +21,14 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
 
+  const expenseCategories = ['餐饮', '购物', '交通', '娱乐', '医疗', '教育', '生活', '其他']
+  const incomeCategories = ['工资', '奖金', '理财', '兼职', '其他']
+
+  // 当类型切换时，清空分类选择
+  useEffect(() => {
+    setCategory('')
+  }, [type])
+
   // 当弹窗关闭时重置表单
   useEffect(() => {
     if (!visible) {
@@ -74,7 +82,7 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
         <View className='add-record-content'>
           <View className='add-record-row'>
             <Text className='add-record-label'>类型</Text>
-            <RadioGroup value={type} onChange={(value: any) => setType(value as 'income' | 'expense')}>
+            <RadioGroup className="custom-radio" value={type} direction="horizontal" onChange={(value: any) => setType(value as 'income' | 'expense')}>
               <Radio value='expense'>支出</Radio>
               <Radio value='income'>收入</Radio>
             </RadioGroup>
@@ -82,12 +90,17 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
 
           <View className='add-record-row'>
             <Text className='add-record-label'>分类</Text>
-            <Input
-              className='add-record-input'
-              placeholder='请输入分类名称'
-              value={category}
-              onChange={(value) => setCategory(value)}
-            />
+            <View className='category-list'>
+              {(type === 'expense' ? expenseCategories : incomeCategories).map((item) => (
+                <View
+                  key={item}
+                  className={`category-item ${category === item ? 'active' : ''}`}
+                  onClick={() => setCategory(item)}
+                >
+                  <Text>{item}</Text>
+                </View>
+              ))}
+            </View>
           </View>
 
           <View className='add-record-row'>
@@ -115,7 +128,7 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
             {/* <Button type='default' onClick={onClose} block>
               取消
             </Button> */}
-            <Button type='primary' onClick={handleSubmit} block>
+            <Button type='primary' onClick={handleSubmit} block color='var(--theme-primary)'>
               保存
             </Button>
           </View>

@@ -38,6 +38,8 @@
   &:last-child {
     margin-bottom: 0;
   }
+
+  
 }
 
 .add-record-label {
@@ -54,6 +56,61 @@
   padding: 12px;
   font-size: 14px;
   background: #fff;
+  width: 100%;
+}
+
+.custom-radio {
+  :global {
+    .nut-radio__icon {
+      &--active {
+        color: var(--theme-primary) !important;
+        border-color: var(--theme-primary) !important;
+        background-color: white !important;
+      }
+    }
+
+    .nut-radio__icon--inner {
+      background-color: var(--theme-primary) !important;
+    }
+
+    .nut-radio__label {
+      &--active {
+        color: var(--theme-primary) !important;
+      }
+    }
+  }
+}
+
+.category-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.category-item {
+  padding: 12px 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  transition: all 0.2s;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:active {
+    opacity: 0.7;
+  }
+
+  &.active {
+    border-color: var(--theme-primary);
+    color: var(--theme-primary);
+    background: #f5f9ff;
+    font-weight: 500;
+  }
 }
 
 .add-record-actions {

@@ -72,7 +72,7 @@ export default defineConfig((merge) => {
           }
         },
         cssModules: {
-          enable: false,
+          enable: true,
           config: {
             namingPattern: 'module',
             generateScopedName: '[name]__[local]___[hash:base64:5]'

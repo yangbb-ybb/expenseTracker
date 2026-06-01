@@ -3,6 +3,7 @@ import { ConfigProvider } from '@nutui/nutui-react-taro'
 import { Edit } from '@nutui/icons-react-taro'
 import Taro from '@tarojs/taro'
 import { useState } from 'react'
+import { consumeApi } from '@/api/consume'
 import UserInfo from './components/UserInfo'
 import TransactionList from './components/TransactionList'
 import AddRecordPopup from './components/AddRecordPopup'
@@ -23,10 +24,14 @@ export default function Index() {
   }) => {
     console.log('提交的数据:', data)
     // TODO: 调用 API 保存记录
-    // consumeApi.create(data)
-    Taro.showToast({ title: '添加成功', icon: 'success' })
-    // TODO: 刷新列表
-    // transactionListRef.current?.refresh()
+    consumeApi.create(data).then(() => {
+      Taro.showToast({ title: '添加成功', icon: 'success' })
+      // TODO: 刷新列表
+      // transactionListRef.current?.refresh()
+    }).catch((error: any) => {
+      console.error('保存失败:', error)
+      Taro.showToast({ title: '保存失败', icon: 'none' })
+    })
   }
 
   return (

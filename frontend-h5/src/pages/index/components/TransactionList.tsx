@@ -85,12 +85,6 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
     }
   }
 
-  // 下拉刷新
-  const handleRefresh = () => {
-    setPage(1)
-    fetchData(1, true)
-  }
-
   return (
     <View className='transaction-list'>
       <View className='transaction-list__header'>
@@ -100,7 +94,6 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
         className='transaction-list__content'
         scrollY
         onScrollToLower={handleScrollToLower}
-        onScrollToUpper={handleRefresh}
       >
         {allList.length === 0 ? (
           <View className='transaction-list__empty'>
