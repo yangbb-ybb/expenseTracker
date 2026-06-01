@@ -52,7 +52,7 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
             hour: '2-digit',
             minute: '2-digit'
           }) : item.date,
-          amount: `${item.type === 'income' ? '+' : '-'}${Number(item.amount).toFixed(2)}`,
+          amount: `${item.type === 'income' ? '+' : '-'}${(item.amount / 100).toFixed(2)}`, // 分转元
           type: item.type === 'income' ? 'income' : 'expense'
         }))
 
@@ -75,6 +75,20 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
   // 初始化加载
   useEffect(() => {
     fetchData(1, true)
+  }, [])
+
+  // 监听刷新事件
+  useEffect(() => {
+    const handleRefresh = () => {
+      setPage(1)
+      fetchData(1, true)
+    }
+
+    Taro.eventCenter.on('refreshTransactionList', handleRefresh)
+
+    return () => {
+      Taro.eventCenter.off('refreshTransactionList', handleRefresh)
+    }
   }, [])
 
   // 上拉加载更多

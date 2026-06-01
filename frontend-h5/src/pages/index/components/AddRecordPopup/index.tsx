@@ -13,6 +13,8 @@ interface AddRecordPopupProps {
     category: string
     amount: number
     description?: string
+    date?: string
+    createTime?: string
   }) => void
 }
 
@@ -50,17 +52,25 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
       return
     }
 
+    // 验证金额是否为正数
+    const amountValue = parseFloat(amount)
+    if (isNaN(amountValue) || amountValue <= 0) {
+      Taro.showToast({ title: '金额必须大于 0', icon: 'none' })
+      return
+    }
+
+    // 后端金额单位为分，需要 * 100
+    // 同时记录当前时间
     const recordData = {
       type,
       category,
-      amount: parseFloat(amount),
-      description: description || undefined
+      amount: Math.round(amountValue * 100), // 转换为分
+      description: description || undefined,
+      date: new Date().toISOString().split('T')[0], // 格式: YYYY-MM-DD
+      createTime: new Date().toISOString() // ISO 8601 格式
     }
 
     onConfirm?.(recordData)
-
-    // 关闭弹窗
-    onClose()
   }
 
   return (
@@ -108,7 +118,7 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
             <Text className='add-record-label'>金额</Text>
             <Input
               className='add-record-input'
-              type='number'
+              type='digit'
               placeholder='请输入金额'
               value={amount}
               onChange={(value) => setAmount(value)}

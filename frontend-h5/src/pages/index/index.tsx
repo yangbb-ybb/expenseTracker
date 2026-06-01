@@ -21,16 +21,21 @@ export default function Index() {
     category: string
     amount: number
     description?: string
+    date?: string
+    createTime?: string
   }) => {
-    console.log('提交的数据:', data)
-    // TODO: 调用 API 保存记录
+    // 调用 API 保存记录
     consumeApi.create(data).then(() => {
       Taro.showToast({ title: '添加成功', icon: 'success' })
-      // TODO: 刷新列表
-      // transactionListRef.current?.refresh()
+
+      // 刷新列表
+      Taro.eventCenter.trigger('refreshTransactionList')
     }).catch((error: any) => {
       console.error('保存失败:', error)
       Taro.showToast({ title: '保存失败', icon: 'none' })
+    }).finally(() => {
+      // 关闭弹窗
+      setShowPopup(false)
     })
   }
 
