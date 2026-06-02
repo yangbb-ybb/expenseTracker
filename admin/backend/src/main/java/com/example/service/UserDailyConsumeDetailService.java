@@ -60,4 +60,13 @@ public interface UserDailyConsumeDetailService {
      * @return 统计数据
      */
     com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO getStatistics(Long userId);
+
+    /**
+     * 根据统计日期统计用户总支出和总收入
+     *
+     * @param userId      用户ID
+     * @param consumeDate 日期（格式：yyyy-MM 或 yyyy-MM-dd，可选）
+     * @return 统计数据
+     */
+    com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO getStatistics(Long userId, String consumeDate);
 }

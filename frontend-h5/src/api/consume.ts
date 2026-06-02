@@ -35,8 +35,10 @@ export const consumeApi = {
 
   /**
    * 统计用户总支出和总收入
+   * @param consumeDate - 日期（格式：YYYY-MM），选填
    */
-  statistics: () => http.get('/userDailyConsumeDetail/statistics')
+  statistics: (consumeDate?: string) =>
+    http.get('/userDailyConsumeDetail/statistics', { params: { consumeDate } })
 }
 
 export default consumeApi

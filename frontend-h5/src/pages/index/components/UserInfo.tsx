@@ -1,5 +1,6 @@
 import { View, Text } from '@tarojs/components'
 import { Avatar } from '@nutui/nutui-react-taro'
+import Taro from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { userApi } from '@/api'
 import { consumeApi } from '@/api/consume'
@@ -39,11 +40,14 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
           })
         }
 
-        const stats: any = await consumeApi.statistics()
+        // 获取统计数据（传入当前月份）
+        const now = new Date()
+        const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+        const stats: any = await consumeApi.statistics(currentMonth)
         if (stats) {
           setStatistics({
-            totalExpense: Number(stats.totalExpense || 0).toFixed(2),
-            totalIncome: Number(stats.totalIncome || 0).toFixed(2)
+            totalExpense: (Number(stats.totalExpense || 0) / 100).toFixed(2),
+            totalIncome: (Number(stats.totalIncome || 0) / 100).toFixed(2)
           })
         }
       } catch {
@@ -52,6 +56,29 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
     }
 
     init()
+  }, [])
+
+  // 监听月份变化事件
+  useEffect(() => {
+    const handleMonthChange = (month: string) => {
+      // 重新获取统计数据
+      consumeApi.statistics(month).then((stats: any) => {
+        if (stats) {
+          setStatistics({
+            totalExpense: (Number(stats.totalExpense || 0) / 100).toFixed(2),
+            totalIncome: (Number(stats.totalIncome || 0) / 100).toFixed(2)
+          })
+        }
+      }).catch(error => {
+        console.error('获取统计数据失败:', error)
+      })
+    }
+
+    Taro.eventCenter.on('monthChanged', handleMonthChange)
+
+    return () => {
+      Taro.eventCenter.off('monthChanged', handleMonthChange)
+    }
   }, [])
 
   return (

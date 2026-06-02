@@ -98,6 +98,24 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
     }
   }, [])
 
+  // 监听月份变化事件
+  useEffect(() => {
+    const handleMonthChange = (month: string) => {
+      // 当其他地方触发月份变化时（比如添加记录），如果当前页面的月份与传入的月份不同，需要刷新
+      if (currentMonth !== month) {
+        setCurrentMonth(month)
+        setPage(1)
+        fetchData(1, true, month)
+      }
+    }
+
+    Taro.eventCenter.on('monthChanged', handleMonthChange)
+
+    return () => {
+      Taro.eventCenter.off('monthChanged', handleMonthChange)
+    }
+  }, [currentMonth])
+
   // 上拉加载更多
   const handleScrollToLower = () => {
     if (!loading && hasMore) {
@@ -110,6 +128,8 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
     setCurrentMonth(month)
     setPage(1)
     fetchData(1, true, month)
+    // 触发月份变化事件
+    Taro.eventCenter.trigger('monthChanged', month)
   }
 
   return (

@@ -130,20 +130,22 @@ public class UserDailyConsumeDetailController {
      *
      * GET /userDailyConsumeDetail/statistics
      *
-     * @param request HTTP 请求（用于获取 userId）
+     * @param request      HTTP 请求（用于获取 userId）
+     * @param consumeDate 日期（格式：yyyy-MM 或 yyyy-MM-dd，可选）
      * @return 统计数据
      */
-    @Operation(summary = "统计用户收支", description = "统计用户总支出和总收入，userId 从 Token 中自动获取")
+    @Operation(summary = "统计用户收支", description = "统计用户总支出和总收入，支持按日期筛选，userId 从 Token 中自动获取")
     @GetMapping("/statistics")
     public Result<com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO> getStatistics(
-            HttpServletRequest request
+            HttpServletRequest request,
+            @RequestParam(required = false) String consumeDate
     ) {
         Long userId = (Long) request.getAttribute("userId");
         if (userId == null) {
             return Result.error("未登录或 Token 无效");
         }
 
-        com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO statistics = service.getStatistics(userId);
+        com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO statistics = service.getStatistics(userId, consumeDate);
         return Result.success(statistics);
     }
 }

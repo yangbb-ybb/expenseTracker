@@ -87,26 +87,72 @@ public class UserDailyConsumeDetailServiceImpl implements UserDailyConsumeDetail
 
     @Override
     public com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO getStatistics(Long userId) {
+        return getStatistics(userId, null);
+    }
+
+    @Override
+    public com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO getStatistics(Long userId, String consumeDate) {
         com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<UserDailyConsumeDetail> expenseWrapper =
                 new com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<>();
         expenseWrapper.eq("user_id", userId)
                 .eq("consume_type", "expense")
-                .eq("is_deleted", 0)
-                .select("COALESCE(SUM(consume_amount), 0) as total");
+                .eq("is_deleted", 0);
+
+        // 如果指定了日期，按日期查询
+        if (consumeDate != null && !consumeDate.isEmpty()) {
+            try {
+                // 尝试解析为完整日期（yyyy-MM-dd）
+                if (consumeDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                    LocalDate date = LocalDate.parse(consumeDate);
+                    expenseWrapper.eq("consume_date", date);
+                } else if (consumeDate.matches("\\d{4}-\\d{2}")) {
+                    // 解析为月份（yyyy-MM），查询该月的所有记录
+                    LocalDate startDate = LocalDate.parse(consumeDate + "-01");
+                    LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+                    expenseWrapper.between("consume_date", startDate, endDate);
+                } else {
+                    throw new IllegalArgumentException("日期格式错误，应为：yyyy-MM-dd 或 yyyy-MM");
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException("日期格式错误，应为：yyyy-MM-dd 或 yyyy-MM");
+            }
+        }
+
+        expenseWrapper.select("COALESCE(SUM(consume_amount), 0) as total");
         Object expenseResult = repository.selectObjs(expenseWrapper).stream().findFirst().orElse(BigDecimal.ZERO);
 
         com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<UserDailyConsumeDetail> incomeWrapper =
                 new com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<>();
         incomeWrapper.eq("user_id", userId)
                 .eq("consume_type", "income")
-                .eq("is_deleted", 0)
-                .select("COALESCE(SUM(consume_amount), 0) as total");
+                .eq("is_deleted", 0);
+
+        // 如果指定了日期，按日期查询
+        if (consumeDate != null && !consumeDate.isEmpty()) {
+            try {
+                // 尝试解析为完整日期（yyyy-MM-dd）
+                if (consumeDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                    LocalDate date = LocalDate.parse(consumeDate);
+                    incomeWrapper.eq("consume_date", date);
+                } else if (consumeDate.matches("\\d{4}-\\d{2}")) {
+                    // 解析为月份（yyyy-MM），查询该月的所有记录
+                    LocalDate startDate = LocalDate.parse(consumeDate + "-01");
+                    LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+                    incomeWrapper.between("consume_date", startDate, endDate);
+                }
+            } catch (Exception e) {
+                // 不会到这里，上面已经验证过
+            }
+        }
+
+        incomeWrapper.select("COALESCE(SUM(consume_amount), 0) as total");
         Object incomeResult = repository.selectObjs(incomeWrapper).stream().findFirst().orElse(BigDecimal.ZERO);
 
         com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO statistics =
                 new com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO();
         statistics.setTotalExpense(new BigDecimal(expenseResult.toString()));
         statistics.setTotalIncome(new BigDecimal(incomeResult.toString()));
+        statistics.setConsumeDate(consumeDate);
         return statistics;
     }
 

@@ -29,6 +29,9 @@ export default function Index() {
 
       // 刷新列表
       Taro.eventCenter.trigger('refreshTransactionList')
+      // 刷新统计数据（重新统计当前月份）
+      const currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`
+      Taro.eventCenter.trigger('monthChanged', currentMonth)
     }).catch((error: any) => {
       console.error('保存失败:', error)
       const msg = error?.message || error?.response?.data?.message || '保存失败'
