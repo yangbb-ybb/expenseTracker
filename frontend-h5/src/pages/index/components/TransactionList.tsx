@@ -43,15 +43,10 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
   const [showDatePicker, setShowDatePicker] = useState(false)
 
   // 获取数据
-  const fetchData = async (pageNum: number, clear = false) => {
+  const fetchData = async (pageNum: number, clear = false, consumeDate: string = currentMonth) => {
     setLoading(true)
     try {
-      // 计算一年前的日期，格式：YYYY-MM
-      const now = new Date()
-      const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), 1)
-      const startDate = `${oneYearAgo.getFullYear()}-${String(oneYearAgo.getMonth() + 1).padStart(2, '0')}`
-
-      const res = await consumeApi.getList({ page: pageNum, size: pageSize, date: startDate })
+      const res = await consumeApi.getList({ page: pageNum, size: pageSize, consumeDate })
 
       if (res && Array.isArray(res.records)) {
         // 过滤当前月份的数据

@@ -6,7 +6,7 @@ export const consumeApi = {
    * 查询消费明细列表（分页）
    * @param params - page: 页码, size: 每页数量
    */
-  getList: (params?: { page?: number; size?: number; date?: string }) =>
+  getList: (params?: { page?: number; size?: number; consumeDate?: string; }) =>
     http.get('/userDailyConsumeDetail/list', { params }),
 
   /**
