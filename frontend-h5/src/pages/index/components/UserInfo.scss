@@ -32,32 +32,54 @@
   }
 
   &__balance {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 16px;
-    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    padding: 18px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
+    gap: 16px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
     &:active {
-      transform: scale(0.98);
-      background: rgba(255, 255, 255, 0.15);
+      transform: scale(0.99);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     }
+  }
+
+  &__balance-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   &__balance-label {
     font-size: 14px;
-    opacity: 0.9;
+    opacity: 0.85;
     font-weight: 500;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
   }
 
   &__balance-value {
     font-size: 28px;
     font-weight: 800;
     color: #fff;
-    line-height: 1;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+  }
+
+  .expense {
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+  }
+
+  .income {
+    color: #ff6b6b;
+    text-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
   }
 }

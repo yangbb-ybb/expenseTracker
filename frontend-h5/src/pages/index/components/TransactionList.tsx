@@ -46,7 +46,7 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
       if (res && Array.isArray(res.records)) {
         const newList: Transaction[] = res.records.map((item: TransactionRecord) => ({
           id: item.id,
-          title: `${item.consumeCategory} (${item.description})`,
+          title: `${item.consumeCategory} ${ item.description ? `(${item.description})` : '' }`,
           time: item.createTime ? new Date(item.createTime).toLocaleDateString('zh-CN', {
             month: '2-digit',
             day: '2-digit',
