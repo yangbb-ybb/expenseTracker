@@ -115,7 +115,7 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
   const handleChangeMonth = (month: string) => {
     setCurrentMonth(month)
     setPage(1)
-    fetchData(1, true)
+    fetchData(1, true, month)
   }
 
   return (

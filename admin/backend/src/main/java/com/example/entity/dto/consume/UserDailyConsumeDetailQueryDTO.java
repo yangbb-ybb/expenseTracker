@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Min;
  */
 public class UserDailyConsumeDetailQueryDTO {
 
-    /** 消费日期（格式：yyyy-MM-dd，可选） */
+    /** 消费日期（格式：yyyy-MM-dd 或 yyyy-MM，可选） */
     private String consumeDate;
 
     /** 页码（默认 1） */

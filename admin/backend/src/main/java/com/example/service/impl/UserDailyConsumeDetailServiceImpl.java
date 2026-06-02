@@ -118,13 +118,24 @@ public class UserDailyConsumeDetailServiceImpl implements UserDailyConsumeDetail
         wrapper.eq(UserDailyConsumeDetail::getUserId, userId);
         wrapper.eq(UserDailyConsumeDetail::getIsDeleted, 0);
 
-        // 如果指定了日期，按日期查询
+        // 如果指定了日期，按日期查询（支持日期或月份格式）
         if (queryDTO.getConsumeDate() != null && !queryDTO.getConsumeDate().isEmpty()) {
             try {
-                LocalDate date = LocalDate.parse(queryDTO.getConsumeDate());
-                wrapper.eq(UserDailyConsumeDetail::getConsumeDate, date);
+                String consumeDate = queryDTO.getConsumeDate();
+                // 尝试解析为完整日期（yyyy-MM-dd）
+                if (consumeDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                    LocalDate date = LocalDate.parse(consumeDate);
+                    wrapper.eq(UserDailyConsumeDetail::getConsumeDate, date);
+                } else if (consumeDate.matches("\\d{4}-\\d{2}")) {
+                    // 解析为月份（yyyy-MM），查询该月的所有记录
+                    LocalDate startDate = LocalDate.parse(consumeDate + "-01");
+                    LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+                    wrapper.between(UserDailyConsumeDetail::getConsumeDate, startDate, endDate);
+                } else {
+                    throw new IllegalArgumentException("日期格式错误，应为：yyyy-MM-dd 或 yyyy-MM");
+                }
             } catch (Exception e) {
-                throw new IllegalArgumentException("日期格式错误，应为：yyyy-MM-dd");
+                throw new IllegalArgumentException("日期格式错误，应为：yyyy-MM-dd 或 yyyy-MM");
             }
         }
 
