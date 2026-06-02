@@ -160,7 +160,11 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
           <DatePicker
             visible={showDatePicker}
             type='date'
-            startDate={new Date('2020-01-01')}
+            startDate={(() => {
+              const now = new Date()
+              const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate())
+              return sixMonthsAgo
+            })()}
             endDate={new Date()}
             value={new Date(selectedDate)}
             onConfirm={(_selectedOptions, selectedValue) => {

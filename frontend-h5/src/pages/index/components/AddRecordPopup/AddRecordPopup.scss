@@ -39,7 +39,7 @@
     margin-bottom: 0;
   }
 
-  
+
 }
 
 .add-record-label {
@@ -137,5 +137,11 @@
   .date-display {
     font-size: 14px;
     color: #333;
+  }
+
+  :global {
+    .nut-picker {
+      display: none;
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from '@tarojs/components'
-import { Cell, Loading } from '@nutui/nutui-react-taro'
+import { Cell, Loading, DatePicker } from '@nutui/nutui-react-taro'
 import Taro from '@tarojs/taro'
 import { useState, useEffect } from 'react'
 import { consumeApi } from '@/api/consume'
@@ -36,15 +36,32 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
   const [loading, setLoading] = useState(false)
   const [allList, setAllList] = useState<Transaction[]>([])
   const [hasMore, setHasMore] = useState(true)
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const now = new Date()
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  })
+  const [showDatePicker, setShowDatePicker] = useState(false)
 
   // 获取数据
   const fetchData = async (pageNum: number, clear = false) => {
     setLoading(true)
     try {
-      const res = await consumeApi.getList({ page: pageNum, size: pageSize })
+      // 计算一年前的日期，格式：YYYY-MM
+      const now = new Date()
+      const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), 1)
+      const startDate = `${oneYearAgo.getFullYear()}-${String(oneYearAgo.getMonth() + 1).padStart(2, '0')}`
+
+      const res = await consumeApi.getList({ page: pageNum, size: pageSize, date: startDate })
 
       if (res && Array.isArray(res.records)) {
-        const newList: Transaction[] = res.records.map((item: TransactionRecord) => ({
+        // 过滤当前月份的数据
+        const monthFilter = currentMonth
+        const filteredRecords = res.records.filter((item: TransactionRecord) => {
+          if (!monthFilter) return true
+          return item.createTime?.startsWith(monthFilter)
+        })
+
+        const newList: Transaction[] = filteredRecords.map((item: TransactionRecord) => ({
           id: item.id,
           title: `${item.consumeCategory} ${ item.description ? `(${item.description})` : '' }`,
           time: item.createTime ? new Date(item.createTime).toLocaleDateString('zh-CN', {
@@ -100,10 +117,56 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
     }
   }
 
+  const handleChangeMonth = (month: string) => {
+    setCurrentMonth(month)
+    setPage(1)
+    fetchData(1, true)
+  }
+
   return (
     <View className='transaction-list'>
       <View className='transaction-list__header'>
         <Text className='transaction-list__title'>交易明细</Text>
+        <View className='transaction-list__month-wrapper'>
+          <Text
+            className='transaction-list__month'
+            onClick={() => setShowDatePicker(true)}
+          >
+            {currentMonth
+              ? `${currentMonth.split('-')[0]}年${currentMonth.split('-')[1]}月`
+              : `${new Date().getFullYear()}年${String(new Date().getMonth() + 1).padStart(2, '0')}月`}
+          </Text>
+          {!currentMonth && (
+            <Text className='transaction-list__month-tips'>（点击选择月份）</Text>
+          )}
+
+          {/* 日期选择器 */}
+          <DatePicker
+            visible={showDatePicker}
+            type='year-month'
+            startDate={(() => {
+              const now = new Date()
+              const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), 1)
+              return oneYearAgo
+            })()}
+            endDate={new Date()}
+            value={currentMonth ? new Date(`${currentMonth}-01`) : new Date()}
+            onConfirm={(_selectedOptions, selectedValue) => {
+              const [year, month] = selectedValue as string[]
+              const formattedMonth = `${year}-${String(month).padStart(2, '0')}`
+              handleChangeMonth(formattedMonth)
+              setShowDatePicker(false)
+            }}
+            onClose={() => setShowDatePicker(false)}
+            onCancel={() => setShowDatePicker(false)}
+            title='选择月份'
+            formatter={(type, option) => {
+              if (type === 'year') return { ...option, label: `${option.value}年` }
+              if (type === 'month') return { ...option, label: `${option.value}月` }
+              return option
+            }}
+          />
+        </View>
       </View>
       <ScrollView
         className='transaction-list__content'
