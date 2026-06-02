@@ -14,8 +14,7 @@ public class UserDailyConsumeDetailDTO {
     /** 主键，更新时必须提供 */
     private Long id;
 
-    /** 用户ID */
-    @NotNull(message = "用户ID不能为空")
+    /** 用户ID，由Controller从Token中提取设置 */
     private Long userId;
 
     /** 消费日期 */
@@ -29,12 +28,12 @@ public class UserDailyConsumeDetailDTO {
     private BigDecimal consumeAmount;
 
     /** 消费类型/渠道 */
-    @Pattern(regexp = "^(alipay|wechat|unionpay|cash|other)$", message = "消费类型只能是：alipay, wechat, unionpay, cash, other")
+    @Pattern(regexp = "^(expense|income|other)$", message = "消费类型只能是：alipay, wechat, unionpay, cash, other")
     private String consumeType;
 
     /** 消费分类 */
     @NotNull(message = "消费分类不能为空")
-    @Pattern(regexp = "^(entertainment|shopping|refund|daily_necessities|dining|transport|education|medical|insurance|other|shop_out)$", message = "消费分类只能是：entertainment, shopping, refund, daily_necessities, dining, transport, education, medical, insurance, other, shop_out")
+    // @Pattern(regexp = "^(entertainment|shopping|refund|daily_necessities|dining|transport|education|medical|insurance|other|shop_out)$", message = "消费分类只能是：entertainment, shopping, refund, daily_necessities, dining, transport, education, medical, insurance, other, shop_out")
     private String consumeCategory;
 
     /** 备注/消费描述 */

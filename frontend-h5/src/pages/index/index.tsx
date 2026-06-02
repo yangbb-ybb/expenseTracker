@@ -17,12 +17,11 @@ export default function Index() {
   }
 
   const handleConfirm = (data: {
-    type: 'income' | 'expense'
-    category: string
-    amount: number
+    consumeType: 'income' | 'expense'
+    consumeCategory: string
+    consumeAmount: number
     description?: string
-    date?: string
-    createTime?: string
+    consumeDate: string
   }) => {
     // 调用 API 保存记录
     consumeApi.create(data).then(() => {
@@ -32,7 +31,8 @@ export default function Index() {
       Taro.eventCenter.trigger('refreshTransactionList')
     }).catch((error: any) => {
       console.error('保存失败:', error)
-      Taro.showToast({ title: '保存失败', icon: 'none' })
+      const msg = error?.message || error?.response?.data?.message || '保存失败'
+      Taro.showToast({ title: msg, icon: 'none' })
     }).finally(() => {
       // 关闭弹窗
       setShowPopup(false)

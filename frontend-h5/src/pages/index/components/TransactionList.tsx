@@ -23,9 +23,10 @@ interface TransactionRecord {
   date: string
   type: string
   category: string
-  amount: number
-  description: string
+  consumeAmount: number
   createTime: string
+  consumeCategory: string
+  description: string
 }
 
 export default function TransactionList({ list = [] }: TransactionListProps) {
@@ -45,14 +46,14 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
       if (res && Array.isArray(res.records)) {
         const newList: Transaction[] = res.records.map((item: TransactionRecord) => ({
           id: item.id,
-          title: item.description || `${item.category}`,
+          title: `${item.consumeCategory} (${item.description})`,
           time: item.createTime ? new Date(item.createTime).toLocaleDateString('zh-CN', {
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit'
           }) : item.date,
-          amount: `${item.type === 'income' ? '+' : '-'}${(item.amount / 100).toFixed(2)}`, // 分转元
+          amount: `${item.type === 'income' ? '+' : '-'}${(item.consumeAmount / 100).toFixed(2)}`, // 分转元
           type: item.type === 'income' ? 'income' : 'expense'
         }))
 

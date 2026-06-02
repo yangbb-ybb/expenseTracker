@@ -37,7 +37,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtInterceptor)
                 // 拦截所有请求（基于 context-path: /api 之后的路径）
                 .addPathPatterns("/user/**")
-                .addPathPatterns("/userDailyConsumeDetail/**")
+                .addPathPatterns("/userDailyConsumeDetail", "/userDailyConsumeDetail/**")
                 // 排除不需要 Token 的路径
                 .excludePathPatterns("/user/login", "/user/register")
                 .excludePathPatterns("/authSms/send", "/authLogin/sms", "/authLogin/wx", "/authLogin/ali", "/authLogin/tt")

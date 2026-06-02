@@ -1,5 +1,5 @@
 import { View, Text } from '@tarojs/components'
-import { Popup, Radio, RadioGroup, Input, Button } from '@nutui/nutui-react-taro'
+import { Popup, Radio, RadioGroup, Input, Button, DatePicker } from '@nutui/nutui-react-taro'
 import Taro from '@tarojs/taro'
 import { useState, useEffect } from 'react'
 import './AddRecordPopup.scss'
@@ -9,12 +9,11 @@ interface AddRecordPopupProps {
   visible: boolean
   onClose: () => void
   onConfirm?: (data: {
-    type: 'income' | 'expense'
-    category: string
-    amount: number
+    consumeType: 'income' | 'expense'
+    consumeCategory: string
+    consumeAmount: number
     description?: string
-    date?: string
-    createTime?: string
+    consumeDate: string
   }) => void
 }
 
@@ -23,9 +22,24 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
   const [category, setCategory] = useState('')
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date()
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}` // 默认今天
+  })
+  const [showDatePicker, setShowDatePicker] = useState(false)
 
   const expenseCategories = ['餐饮', '购物', '交通', '娱乐', '医疗', '教育', '生活', '其他']
   const incomeCategories = ['工资', '奖金', '理财', '兼职', '其他']
+
+  // 将日期字符串格式化为 YYYY年MM月DD日
+  const formatDate = (dateString: string) => {
+    const parts = dateString.split('-')
+    if (parts.length !== 3) return dateString
+    const year = parts[0]
+    const month = parseInt(parts[1], 10)
+    const day = parseInt(parts[2], 10)
+    return `${year}年${month}月${day}日`
+  }
 
   // 当类型切换时，清空分类选择
   useEffect(() => {
@@ -44,6 +58,8 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
     setCategory('')
     setAmount('')
     setDescription('')
+    const today = new Date()
+    setSelectedDate(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`) // 重置为今天
   }
 
   const handleSubmit = () => {
@@ -62,12 +78,11 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
     // 后端金额单位为分，需要 * 100
     // 同时记录当前时间
     const recordData = {
-      type,
-      category,
-      amount: Math.round(amountValue * 100), // 转换为分
+      consumeType: type,
+      consumeCategory: category,
+      consumeAmount: amountValue * 100,
       description: description || undefined,
-      date: new Date().toISOString().split('T')[0], // 格式: YYYY-MM-DD
-      createTime: new Date().toISOString() // ISO 8601 格式
+      consumeDate: selectedDate
     }
 
     onConfirm?.(recordData)
@@ -91,6 +106,13 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
         </View>
 
         <View className='add-record-content'>
+          <View className='add-record-row'>
+            <Text className='add-record-label'>日期</Text>
+            <View className='add-record-input date-picker-wrapper' onClick={() => setShowDatePicker(true)}>
+              <Text className='date-display'>{formatDate(selectedDate)}</Text>
+            </View>
+          </View>
+
           <View className='add-record-row'>
             <Text className='add-record-label'>类型</Text>
             <RadioGroup className={ `custom-radio ${style.radioBox}` } value={type} direction="horizontal" onChange={(value: any) => setType(value as 'income' | 'expense')}>
@@ -134,6 +156,28 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
               onChange={(value) => setDescription(value)}
             />
           </View>
+
+          <DatePicker
+            visible={showDatePicker}
+            type='date'
+            startDate={new Date('2020-01-01')}
+            endDate={new Date()}
+            value={new Date(selectedDate)}
+            onConfirm={(_selectedOptions, selectedValue) => {
+              const [year, month, day] = selectedValue as string[]
+              setSelectedDate(`${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`)
+              setShowDatePicker(false)
+            }}
+            onClose={() => setShowDatePicker(false)}
+            onCancel={() => setShowDatePicker(false)}
+            title='选择日期'
+            formatter={(type, option) => {
+              if (type === 'year') return { ...option, label: `${option.value}年` }
+              if (type === 'month') return { ...option, label: `${option.value}月` }
+              if (type === 'day') return { ...option, label: `${option.value}日` }
+              return option
+            }}
+          />
 
           <View className='add-record-actions'>
             {/* <Button type='default' onClick={onClose} block>

@@ -10,7 +10,6 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -29,40 +28,19 @@ public class UserDailyConsumeDetailServiceImpl implements UserDailyConsumeDetail
     @Override
     @Transactional(rollbackFor = Exception.class)
     public UserDailyConsumeDetail addConsumeDetail(com.example.entity.dto.consume.UserDailyConsumeDetailDTO dto) {
-        // 检查是否存在相同的记录（用户+日期+类型+分类）
-        UserDailyConsumeDetail existing = repository.selectOne(
-                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<UserDailyConsumeDetail>()
-                        .eq(UserDailyConsumeDetail::getUserId, dto.getUserId())
-                        .eq(UserDailyConsumeDetail::getConsumeDate, LocalDate.parse(dto.getConsumeDate()))
-                        .eq(UserDailyConsumeDetail::getConsumeType, dto.getConsumeType())
-                        .eq(UserDailyConsumeDetail::getConsumeCategory, dto.getConsumeCategory())
-                        .eq(UserDailyConsumeDetail::getIsDeleted, 0)
-        );
-
         UserDailyConsumeDetail record = new UserDailyConsumeDetail();
-
-        if (existing != null) {
-            // 如果存在，累加金额
-            BigDecimal newAmount = existing.getConsumeAmount().add(dto.getConsumeAmount());
-            existing.setConsumeAmount(newAmount);
-            existing.setUpdateTime(LocalDateTime.now());
-            repository.updateById(existing);
-            return existing;
-        } else {
-            // 如果不存在，创建新记录
-            record.setUserId(dto.getUserId());
-            record.setConsumeDate(LocalDate.parse(dto.getConsumeDate()));
-            record.setConsumeAmount(dto.getConsumeAmount());
-            record.setConsumeType(dto.getConsumeType());
-            record.setConsumeCategory(dto.getConsumeCategory());
-            record.setDescription(dto.getDescription());
-            record.setIsDeleted(0);
-            record.setIsExcludedFromTotal(dto.getIsExcludedFromTotal() != null ? dto.getIsExcludedFromTotal() : 0);
-            record.setCreateTime(LocalDateTime.now());
-            record.setUpdateTime(LocalDateTime.now());
-            repository.insert(record);
-            return record;
-        }
+        record.setUserId(dto.getUserId());
+        record.setConsumeDate(LocalDate.parse(dto.getConsumeDate()));
+        record.setConsumeAmount(dto.getConsumeAmount());
+        record.setConsumeType(dto.getConsumeType());
+        record.setConsumeCategory(dto.getConsumeCategory());
+        record.setDescription(dto.getDescription());
+        record.setIsDeleted(0);
+        record.setIsExcludedFromTotal(dto.getIsExcludedFromTotal() != null ? dto.getIsExcludedFromTotal() : 0);
+        record.setCreateTime(LocalDateTime.now());
+        record.setUpdateTime(LocalDateTime.now());
+        repository.insert(record);
+        return record;
     }
 
     @Override

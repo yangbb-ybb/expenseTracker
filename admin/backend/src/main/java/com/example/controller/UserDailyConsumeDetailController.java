@@ -34,9 +34,16 @@ public class UserDailyConsumeDetailController {
      * @param dto 消费明细数据
      * @return 消费明细记录
      */
-    @Operation(summary = "添加消费明细", description = "添加一笔用户消费明细记录，如果相同用户+日期+类型+分类已存在，则累加金额")
+    @Operation(summary = "添加消费明细", description = "添加一笔用户消费明细记录")
     @PostMapping
-    public Result<UserDailyConsumeDetail> addConsumeDetail(@Valid @RequestBody UserDailyConsumeDetailDTO dto) {
+    public Result<UserDailyConsumeDetail> addConsumeDetail(
+            HttpServletRequest request,
+            @Valid @RequestBody UserDailyConsumeDetailDTO dto) {
+        Long userId = (Long) request.getAttribute("userId");
+        if (userId == null) {
+            return Result.error("未登录或 Token 无效");
+        }
+        dto.setUserId(userId);
         UserDailyConsumeDetail record = service.addConsumeDetail(dto);
         return Result.success(record);
     }
