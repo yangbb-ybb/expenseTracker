@@ -21,7 +21,7 @@ interface TransactionRecord {
   id: number
   userId: number
   date: string
-  type: string
+  consumeType: string
   category: string
   consumeAmount: number
   createTime: string
@@ -53,8 +53,8 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
             hour: '2-digit',
             minute: '2-digit'
           }) : item.date,
-          amount: `${item.type === 'income' ? '+' : '-'}${(item.consumeAmount / 100).toFixed(2)}`, // 分转元
-          type: item.type === 'income' ? 'income' : 'expense'
+          amount: `${item.consumeType === 'income' ? '+' : '-'}${(item.consumeAmount / 100).toFixed(2)}`, // 分转元
+          type: item.consumeType === 'income' ? 'income' : 'expense'
         }))
 
         if (clear) {

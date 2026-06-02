@@ -124,4 +124,26 @@ public class UserDailyConsumeDetailController {
         IPage<UserDailyConsumeDetail> page = service.getListByUserAndDate(userId, queryDTO);
         return Result.success(page);
     }
+
+    /**
+     * 统计用户总支出和总收入
+     *
+     * GET /userDailyConsumeDetail/statistics
+     *
+     * @param request HTTP 请求（用于获取 userId）
+     * @return 统计数据
+     */
+    @Operation(summary = "统计用户收支", description = "统计用户总支出和总收入，userId 从 Token 中自动获取")
+    @GetMapping("/statistics")
+    public Result<com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO> getStatistics(
+            HttpServletRequest request
+    ) {
+        Long userId = (Long) request.getAttribute("userId");
+        if (userId == null) {
+            return Result.error("未登录或 Token 无效");
+        }
+
+        com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO statistics = service.getStatistics(userId);
+        return Result.success(statistics);
+    }
 }

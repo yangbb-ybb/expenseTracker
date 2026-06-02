@@ -31,7 +31,12 @@ export const consumeApi = {
    * 更新消费明细
    * @param data - 消费明细数据
    */
-  update: (data: any) => http.put('/userDailyConsumeDetail', data)
+  update: (data: any) => http.put('/userDailyConsumeDetail', data),
+
+  /**
+   * 统计用户总支出和总收入
+   */
+  statistics: () => http.get('/userDailyConsumeDetail/statistics')
 }
 
 export default consumeApi

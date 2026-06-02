@@ -52,4 +52,12 @@ public interface UserDailyConsumeDetailService {
      * @return 消费明细列表（分页）
      */
     IPage<UserDailyConsumeDetail> getListByUserAndDate(Long userId, UserDailyConsumeDetailQueryDTO queryDTO);
+
+    /**
+     * 统计用户总支出和总收入
+     *
+     * @param userId 用户ID
+     * @return 统计数据
+     */
+    com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO getStatistics(Long userId);
 }

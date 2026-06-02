@@ -10,6 +10,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -82,6 +83,31 @@ public class UserDailyConsumeDetailServiceImpl implements UserDailyConsumeDetail
     @Override
     public UserDailyConsumeDetail getById(Long id) {
         return repository.selectById(id);
+    }
+
+    @Override
+    public com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO getStatistics(Long userId) {
+        com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<UserDailyConsumeDetail> expenseWrapper =
+                new com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<>();
+        expenseWrapper.eq("user_id", userId)
+                .eq("consume_type", "expense")
+                .eq("is_deleted", 0)
+                .select("COALESCE(SUM(consume_amount), 0) as total");
+        Object expenseResult = repository.selectObjs(expenseWrapper).stream().findFirst().orElse(BigDecimal.ZERO);
+
+        com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<UserDailyConsumeDetail> incomeWrapper =
+                new com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<>();
+        incomeWrapper.eq("user_id", userId)
+                .eq("consume_type", "income")
+                .eq("is_deleted", 0)
+                .select("COALESCE(SUM(consume_amount), 0) as total");
+        Object incomeResult = repository.selectObjs(incomeWrapper).stream().findFirst().orElse(BigDecimal.ZERO);
+
+        com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO statistics =
+                new com.example.entity.dto.consume.UserDailyConsumeDetailStatisticsDTO();
+        statistics.setTotalExpense(new BigDecimal(expenseResult.toString()));
+        statistics.setTotalIncome(new BigDecimal(incomeResult.toString()));
+        return statistics;
     }
 
     @Override

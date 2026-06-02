@@ -2,6 +2,7 @@ import { View, Text } from '@tarojs/components'
 import { Avatar } from '@nutui/nutui-react-taro'
 import { useEffect, useState } from 'react'
 import { userApi } from '@/api'
+import { consumeApi } from '@/api/consume'
 import { ensureLoggedIn } from '@/utils/auth'
 import { maskPhone } from '@/utils/format'
 import './UserInfo.scss'
@@ -19,19 +20,30 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
     balance: balance || '0.00',
     id: ''
   })
+  const [statistics, setStatistics] = useState({
+    totalExpense: '0.00',
+    totalIncome: '0.00'
+  })
 
   useEffect(() => {
     async function init() {
       try {
         await ensureLoggedIn()
         const res: any = await userApi.getUserInfo()
-        console.log(res);
         if (res?.id) {
           setUserInfo({
             username: res.username || '用户',
             avatar: res.avatar || '',
             balance: res.balance || '0.00',
             id: res.id || ''
+          })
+        }
+
+        const stats: any = await consumeApi.statistics()
+        if (stats) {
+          setStatistics({
+            totalExpense: Number(stats.totalExpense || 0).toFixed(2),
+            totalIncome: Number(stats.totalIncome || 0).toFixed(2)
           })
         }
       } catch {
@@ -52,8 +64,14 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
         </View>
       </View>
       <View className='user-info__balance'>
-        <Text className='user-info__balance-label'>总支出</Text>
-        <Text className='user-info__balance-value'>¥ {userInfo.balance}</Text>
+        <View className='user-info__balance-item'>
+          <Text className='user-info__balance-label'>总支出</Text>
+          <Text className='user-info__balance-value expense'>¥ {statistics.totalExpense}</Text>
+        </View>
+        <View className='user-info__balance-item'>
+          <Text className='user-info__balance-label'>总收入</Text>
+          <Text className='user-info__balance-value income'>¥ {statistics.totalIncome}</Text>
+        </View>
       </View>
     </View>
   )

@@ -24,3 +24,20 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
 INSERT INTO `sys_user` (`username`, `password`, `nickname`, `email`, `status`) VALUES
 ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', 'admin@example.com', 1),
 ('test', 'e10adc3949ba59abbe56e057f20f883e', '测试用户', 'test@example.com', 1);
+
+-- 用户每日消费明细表
+CREATE TABLE IF NOT EXISTS `user_daily_consume_detail` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id` BIGINT NOT NULL COMMENT '用户ID',
+    `consume_date` DATE NOT NULL COMMENT '消费日期',
+    `consume_amount` DECIMAL(10,2) NOT NULL COMMENT '消费金额',
+    `consume_type` VARCHAR(50) DEFAULT NULL COMMENT '消费类型/渠道',
+    `consume_category` VARCHAR(50) NOT NULL COMMENT '消费分类',
+    `description` VARCHAR(255) DEFAULT NULL COMMENT '备注/消费描述',
+    `is_deleted` TINYINT DEFAULT 0 COMMENT '是否删除 0:否 1:是',
+    `is_excluded_from_total` TINYINT DEFAULT 0 COMMENT '是否计入总计 0:计入 1:仅展示不计入',
+    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_date` (`user_id`, `consume_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户每日消费明细表';
