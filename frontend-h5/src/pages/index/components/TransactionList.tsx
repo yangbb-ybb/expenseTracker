@@ -43,20 +43,14 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
   const [showDatePicker, setShowDatePicker] = useState(false)
 
   // 获取数据
-  const fetchData = async (pageNum: number, clear = false, consumeDate: string = currentMonth) => {
+  const fetchData = async (pageNum: number, clear = false, consumeDate?: string) => {
     setLoading(true)
     try {
-      const res = await consumeApi.getList({ page: pageNum, size: pageSize, consumeDate })
+      const dateToUse = consumeDate !== undefined ? consumeDate : currentMonth
+      const res = await consumeApi.getList({ page: pageNum, size: pageSize, consumeDate: dateToUse })
 
       if (res && Array.isArray(res.records)) {
-        // 过滤当前月份的数据
-        const monthFilter = currentMonth
-        const filteredRecords = res.records.filter((item: TransactionRecord) => {
-          if (!monthFilter) return true
-          return item.createTime?.startsWith(monthFilter)
-        })
-
-        const newList: Transaction[] = filteredRecords.map((item: TransactionRecord) => ({
+        const newList: Transaction[] = res.records.map((item: TransactionRecord) => ({
           id: item.id,
           title: `${item.consumeCategory} ${ item.description ? `(${item.description})` : '' }`,
           time: item.createTime ? new Date(item.createTime).toLocaleDateString('zh-CN', {
