@@ -81,12 +81,19 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
 
   // 初始化加载
   useEffect(() => {
-    fetchData(1, true)
+    // 检查 token，没有 token 则不请求数据
+    const token = Taro.getStorageSync('token')
+    if (token) {
+      fetchData(1, true)
+    }
   }, [])
 
   // 监听刷新事件
   useEffect(() => {
     const handleRefresh = () => {
+      const token = Taro.getStorageSync('token')
+      if (!token) return
+
       setPage(1)
       fetchData(1, true)
     }
@@ -102,6 +109,9 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
   useEffect(() => {
     const handleMonthChange = (month: string) => {
       // 当其他地方触发月份变化时（比如添加记录），如果当前页面的月份与传入的月份不同，需要刷新
+      const token = Taro.getStorageSync('token')
+      if (!token) return
+
       if (currentMonth !== month) {
         setCurrentMonth(month)
         setPage(1)
@@ -118,6 +128,9 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
 
   // 上拉加载更多
   const handleScrollToLower = () => {
+    const token = Taro.getStorageSync('token')
+    if (!token) return
+
     if (!loading && hasMore) {
       setPage(prev => prev + 1)
       fetchData(page + 1)
@@ -125,6 +138,9 @@ export default function TransactionList({ list = [] }: TransactionListProps) {
   }
 
   const handleChangeMonth = (month: string) => {
+    const token = Taro.getStorageSync('token')
+    if (!token) return
+
     setCurrentMonth(month)
     setPage(1)
     fetchData(1, true, month)

@@ -1,10 +1,10 @@
 import { View, Text } from '@tarojs/components'
-import { Avatar } from '@nutui/nutui-react-taro'
+import { Avatar, Dialog } from '@nutui/nutui-react-taro'
 import Taro from '@tarojs/taro'
 import { useEffect, useState } from 'react'
 import { userApi } from '@/api'
 import { consumeApi } from '@/api/consume'
-import { ensureLoggedIn } from '@/utils/auth'
+import { ensureLoggedIn, doLogin, isLoggedIn } from '@/utils/auth'
 import { maskPhone } from '@/utils/format'
 import './UserInfo.scss'
 
@@ -58,6 +58,28 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
     init()
   }, [])
 
+  const handleNameClick = async () => {
+    const login = async () => {
+      try {
+        await doLogin()
+      } catch (error: any) {
+        if (error?.message !== '用户取消登录') {
+          console.error('登录失败:', error)
+        }
+      }
+    }
+
+    if (isLoggedIn()) {
+      Dialog.open('switchAccountDialog', {
+        title: '提示',
+        content: '切换账号需重新登录，是否继续？',
+        onConfirm: login,
+      })
+    } else {
+      login()
+    }
+  }
+
   // 监听月份变化事件
   useEffect(() => {
     const handleMonthChange = (month: string) => {
@@ -86,8 +108,9 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
       <View className='user-info__header'>
         <Avatar size='large' src={userInfo.avatar || ''}></Avatar>
         <View className='user-info__info'>
-          <Text className='user-info__name'>{maskPhone(userInfo.username)}</Text>
+          <Text className='user-info__name' onClick={handleNameClick}>{maskPhone(userInfo.username)}</Text>
           {userInfo.id && <Text className='user-info__id'>ID: {userInfo.id}</Text>}
+          <Dialog id='switchAccountDialog' />
         </View>
       </View>
       <View className='user-info__balance'>

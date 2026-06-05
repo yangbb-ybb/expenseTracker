@@ -22,6 +22,7 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
   const [phone, setPhone] = useState('')
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
+  const [sendingSms, setSendingSms] = useState(false)
   const [countdown, setCountdown] = useState(0)
 
   useEffect(() => {
@@ -38,16 +39,20 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
   }
 
   const handleSendSms = async () => {
+    if (sendingSms || countdown > 0) return
     if (!phone) {
       Taro.showToast({ title: '请输入手机号', icon: 'none' })
       return
     }
+    setSendingSms(true)
     try {
       await userApi.sendSms({ phone })
       setCountdown(COUNTDOWN_SECONDS)
       Taro.showToast({ title: '验证码已发送', icon: 'none' })
     } catch (err: any) {
       Taro.showToast({ title: err?.message || '发送失败', icon: 'none' })
+    } finally {
+      setSendingSms(false)
     }
   }
 
@@ -114,11 +119,18 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
             />
           </div>
           <Button
-            type="primary"
             size="small"
-            disabled={countdown > 0}
+            // disabled={countdown > 0}
             onClick={handleSendSms}
-            style={{ ...btnPrimaryStyle, borderRadius: 8, height: 40, width: 90, flexShrink: 0 }}
+            style={{
+              ...btnPrimaryStyle,
+              color: '#fff',
+              borderRadius: 8,
+              height: 40,
+              width: 90,
+              flexShrink: 0,
+              opacity: sendingSms || countdown > 0 ? 0.5 : 1,
+            }}
           >
             {countdown > 0 ? `${countdown}S后重发` : '获取验证码'}
           </Button>
