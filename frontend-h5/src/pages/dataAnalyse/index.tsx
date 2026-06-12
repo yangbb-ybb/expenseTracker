@@ -37,14 +37,29 @@ export default function DataAnalyse() {
   const [categoryData, setCategoryData] = useState<CategoryData[]>([])
   const [totalAmount, setTotalAmount] = useState(0)
 
-  const chartRef = useRef<HTMLDivElement>(null)
   const chartInstanceRef = useRef<echarts.EChartsType | null>(null)
+  const categoryDataRef = useRef<CategoryData[]>([])
+
+  // 保持 ref 与 state 同步，避免闭包问题
+  useEffect(() => {
+    categoryDataRef.current = categoryData
+  }, [categoryData])
 
   // 初始化图表实例
   useEffect(() => {
-    if (chartRef.current) {
-      chartInstanceRef.current = echarts.init(chartRef.current)
+    const initChart = () => {
+      const dom = document.getElementById('dataAnalyseChart') as HTMLDivElement | null
+      console.log('chart dom:', dom)
+      if (dom) {
+        chartInstanceRef.current = echarts.init(dom)
+        console.log('echarts init success')
+        // 初始化完成后，用 ref 中的最新数据渲染
+        renderChart(categoryDataRef.current)
+      }
     }
+
+    // Taro H5 渲染可能有延迟，延迟获取 DOM
+    const timer = setTimeout(initChart, 100)
 
     const handleResize = () => {
       chartInstanceRef.current?.resize()
@@ -52,15 +67,22 @@ export default function DataAnalyse() {
     window.addEventListener('resize', handleResize)
 
     return () => {
+      clearTimeout(timer)
       window.removeEventListener('resize', handleResize)
       chartInstanceRef.current?.dispose()
       chartInstanceRef.current = null
     }
   }, [])
 
+  // 数据变化时渲染图表
+  useEffect(() => {
+    renderChart(categoryData)
+  }, [categoryData])
+
   // 获取数据并渲染图表
   const fetchData = async (month: string) => {
     const token = Taro.getStorageSync('token')
+    console.log('fetchData month:', month, 'token:', token ? 'exists' : 'missing')
     if (!token) return
 
     setLoading(true)
@@ -70,8 +92,10 @@ export default function DataAnalyse() {
         size: 1000,
         consumeDate: month,
       })
+      console.log('getList res:', res)
 
       const records: ConsumeRecord[] = res?.records || []
+      console.log('records count:', records.length)
 
       // 只统计支出，并按分类汇总
       const categoryMap = new Map<string, number>()
@@ -92,11 +116,10 @@ export default function DataAnalyse() {
         .sort((a, b) => b.value - a.value)
 
       const total = data.reduce((sum, item) => sum + item.value, 0)
+      console.log('categoryData:', data, 'total:', total)
 
       setCategoryData(data)
       setTotalAmount(total)
-
-      renderChart(data)
     } catch (error) {
       console.error('获取消费数据失败:', error)
       Taro.showToast({ title: '获取数据失败', icon: 'none' })
@@ -107,6 +130,7 @@ export default function DataAnalyse() {
 
   // 渲染或更新图表
   const renderChart = (data: CategoryData[]) => {
+    console.log('renderChart called, instance:', chartInstanceRef.current, 'data:', data)
     if (!chartInstanceRef.current) return
 
     if (data.length === 0) {
@@ -178,7 +202,7 @@ export default function DataAnalyse() {
         type='year-month'
         startDate={(() => {
           const now = new Date()
-          return new Date(now.getFullYear() - 3, now.getMonth(), 1)
+          return new Date(now.getFullYear() - 1, now.getMonth(), 1)
         })()}
         endDate={new Date()}
         value={new Date(`${currentMonth}-01`)}
@@ -203,32 +227,37 @@ export default function DataAnalyse() {
           <Text className='chart-card__total'>总支出：¥{totalAmount.toFixed(2)}</Text>
         </View>
 
-        {loading ? (
-          <View className='chart-card__loading'>
-            <Loading type='spinner' />
-            <Text>加载中...</Text>
-          </View>
-        ) : categoryData.length === 0 ? (
-          <View className='chart-card__empty'>
-            <Text>暂无支出数据</Text>
-          </View>
-        ) : (
-          <>
-            <View className='chart-container' ref={chartRef} />
-            <View className='legend-list'>
-              {categoryData.map((item) => {
-                const percent = totalAmount > 0 ? ((item.value / totalAmount) * 100).toFixed(1) : '0.0'
-                return (
-                  <View key={item.name} className='legend-item'>
-                    <View className='legend-item__dot' style={{ background: item.color }} />
-                    <Text className='legend-item__name'>{item.name}</Text>
-                    <Text className='legend-item__amount'>¥{item.value.toFixed(2)}</Text>
-                    <Text className='legend-item__percent'>{percent}%</Text>
-                  </View>
-                )
-              })}
+        <View className='chart-wrapper'>
+          <View id='dataAnalyseChart' className='chart-container' />
+
+          {loading && (
+            <View className='chart-card__loading chart-overlay'>
+              <Loading type='spinner' />
+              <Text>加载中...</Text>
             </View>
-          </>
+          )}
+
+          {!loading && categoryData.length === 0 && (
+            <View className='chart-card__empty chart-overlay'>
+              <Text>暂无支出数据</Text>
+            </View>
+          )}
+        </View>
+
+        {!loading && categoryData.length > 0 && (
+          <View className='legend-list'>
+            {categoryData.map((item) => {
+              const percent = totalAmount > 0 ? ((item.value / totalAmount) * 100).toFixed(1) : '0.0'
+              return (
+                <View key={item.name} className='legend-item'>
+                  <View className='legend-item__dot' style={{ background: item.color }} />
+                  <Text className='legend-item__name'>{item.name}</Text>
+                  <Text className='legend-item__amount'>¥{item.value.toFixed(2)}</Text>
+                  <Text className='legend-item__percent'>{percent}%</Text>
+                </View>
+              )
+            })}
+          </View>
         )}
       </View>
     </View>
