@@ -5,6 +5,9 @@ import { useState, useEffect } from 'react'
 import './AddRecordPopup.scss'
 import style from './index.module.scss'
 
+const isH5 = Taro.getEnv() === Taro.ENV_TYPE.WEB
+const TABBAR_HEIGHT = isH5 ? 50 : 0
+
 interface AddRecordPopupProps {
   visible: boolean
   onClose: () => void
@@ -105,7 +108,7 @@ export default function AddRecordPopup({ visible, onClose, onConfirm }: AddRecor
           </Text>
         </View>
 
-        <View className='add-record-content'>
+        <View className='add-record-content' style={{ paddingBottom: TABBAR_HEIGHT + 20 }}>
           <View className='add-record-row'>
             <Text className='add-record-label'>日期</Text>
             <View className='add-record-input date-picker-wrapper' onClick={() => setShowDatePicker(true)}>
