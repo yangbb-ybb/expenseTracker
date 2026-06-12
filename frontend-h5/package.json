@@ -20,6 +20,7 @@
     "@tarojs/runtime": "3.6.38",
     "@tarojs/taro": "3.6.38",
     "axios": "^1.14.0",
+    "echarts": "^6.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.14.0",
