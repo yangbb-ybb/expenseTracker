@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.entity.dto.user.UserLoginDTO;
 import com.example.entity.dto.user.UserRegisterDTO;
+import com.example.entity.dto.user.UserUpdateDTO;
 import com.example.entity.vo.UserInfoVO;
 
 /**
@@ -36,4 +37,12 @@ public interface UserService {
      * @return 用户信息
      */
     UserInfoVO getUserInfo(Long userId);
+
+    /**
+     * 修改用户信息
+     * @param userId 用户ID
+     * @param dto 用户更新信息
+     * @return 更新后的用户信息
+     */
+    UserInfoVO updateUserInfo(Long userId, UserUpdateDTO dto);
 }

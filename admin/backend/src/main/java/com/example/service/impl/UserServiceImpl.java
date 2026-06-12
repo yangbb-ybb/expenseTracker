@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.common.exception.BusinessException;
 import com.example.entity.dto.user.UserLoginDTO;
 import com.example.entity.dto.user.UserRegisterDTO;
+import com.example.entity.dto.user.UserUpdateDTO;
 import com.example.entity.po.User;
 import com.example.entity.vo.UserInfoVO;
 import com.example.repository.UserRepository;
@@ -12,6 +13,9 @@ import com.example.util.JwtUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
 
 /**
  * 用户服务实现类
@@ -118,6 +122,44 @@ public class UserServiceImpl implements UserService {
         // 注意：UserInfoVO 没有 password 字段，所以不会泄露密码
         BeanUtils.copyProperties(user, vo);
 
+        return vo;
+    }
+
+    /**
+     * 修改用户信息
+     * 只更新非空字段，不修改密码、用户名等敏感信息
+     */
+    @Override
+    public UserInfoVO updateUserInfo(Long userId, UserUpdateDTO dto) {
+        // 根据ID查询用户
+        User user = userRepository.selectById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+
+        // 只更新传入的非空字段
+        if (StringUtils.hasText(dto.getNickname())) {
+            user.setNickname(dto.getNickname());
+        }
+        if (StringUtils.hasText(dto.getAvatar())) {
+            user.setAvatar(dto.getAvatar());
+        }
+        if (StringUtils.hasText(dto.getEmail())) {
+            user.setEmail(dto.getEmail());
+        }
+        if (StringUtils.hasText(dto.getMobile())) {
+            user.setMobile(dto.getMobile());
+        }
+
+        // 设置更新时间
+        user.setUpdateTime(LocalDateTime.now());
+
+        // 更新到数据库
+        userRepository.updateById(user);
+
+        // 返回更新后的用户信息
+        UserInfoVO vo = new UserInfoVO();
+        BeanUtils.copyProperties(user, vo);
         return vo;
     }
 }

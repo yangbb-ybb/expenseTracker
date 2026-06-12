@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.common.result.Result;
 import com.example.entity.dto.user.UserLoginDTO;
 import com.example.entity.dto.user.UserRegisterDTO;
+import com.example.entity.dto.user.UserUpdateDTO;
 import com.example.entity.vo.UserInfoVO;
 import com.example.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,6 +90,27 @@ public class UserController {
         UserInfoVO userInfo = userService.getUserInfo(userId);
 
         // 返回成功响应（用户信息在 data 中）
+        return Result.success(userInfo);
+    }
+
+    /**
+     * 修改用户信息接口
+     *
+     * @PutMapping("/info") 处理 PUT 请求，路径：/user/info
+     * 从请求属性中获取 userId（JwtInterceptor 解析 token 后存入）
+     *
+     * @param request HTTP 请求
+     * @param dto 用户更新信息
+     * @return 更新后的用户信息
+     */
+    @PutMapping("/info")
+    public Result<UserInfoVO> updateUserInfo(HttpServletRequest request, @RequestBody UserUpdateDTO dto) {
+        Long userId = (Long) request.getAttribute("userId");
+        if (userId == null) {
+            return Result.error("未登录或 Token 无效");
+        }
+
+        UserInfoVO userInfo = userService.updateUserInfo(userId, dto);
         return Result.success(userInfo);
     }
 }
