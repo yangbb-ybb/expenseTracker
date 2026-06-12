@@ -30,6 +30,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 20px;
+  // padding-bottom: calc(var(--taro-tabbar-height, 0px) + env(safe-area-inset-bottom) + 20px);
 }
 
 .add-record-row {
