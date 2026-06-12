@@ -26,6 +26,33 @@
   }
 }
 
+.type-switcher {
+  display: flex;
+  background: #fff;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  &__item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #666;
+    transition: all 0.2s;
+
+    &.active {
+      background: var(--theme-primary);
+      color: #fff;
+      font-weight: 500;
+    }
+  }
+}
+
 .chart-card {
   background: #fff;
   border-radius: 12px;

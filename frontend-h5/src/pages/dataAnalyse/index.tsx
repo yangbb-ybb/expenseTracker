@@ -34,6 +34,7 @@ export default function DataAnalyse() {
   })
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [currentType, setCurrentType] = useState<'expense' | 'income'>('expense')
   const [categoryData, setCategoryData] = useState<CategoryData[]>([])
   const [totalAmount, setTotalAmount] = useState(0)
 
@@ -100,7 +101,7 @@ export default function DataAnalyse() {
       // 只统计支出，并按分类汇总
       const categoryMap = new Map<string, number>()
       records
-        .filter((item) => item.consumeType === 'expense')
+        .filter((item) => item.consumeType === currentType)
         .forEach((item) => {
           const category = item.consumeCategory || '其他'
           const amount = item.consumeAmount || 0
@@ -111,7 +112,7 @@ export default function DataAnalyse() {
         .map(([name, value]) => ({
           name,
           value: value / 100, // 分转元
-          color: getCategoryColor(name),
+          color: getCategoryColor(name, currentType),
         }))
         .sort((a, b) => b.value - a.value)
 
@@ -179,10 +180,10 @@ export default function DataAnalyse() {
     chartInstanceRef.current.setOption(option, true)
   }
 
-  // 月份变化时重新加载
+  // 月份或类型变化时重新加载
   useEffect(() => {
     fetchData(currentMonth)
-  }, [currentMonth])
+  }, [currentMonth, currentType])
 
   const handleChangeMonth = (month: string) => {
     setCurrentMonth(month)
@@ -195,6 +196,22 @@ export default function DataAnalyse() {
       <View className='month-selector' onClick={() => setShowDatePicker(true)}>
         <Text className='month-selector__label'>{currentMonth.split('-')[0]}年{currentMonth.split('-')[1]}月</Text>
         <Text className='month-selector__arrow'>▼</Text>
+      </View>
+
+      {/* 收支类型切换 */}
+      <View className='type-switcher'>
+        <View
+          className={`type-switcher__item ${currentType === 'expense' ? 'active' : ''}`}
+          onClick={() => setCurrentType('expense')}
+        >
+          <Text>支出</Text>
+        </View>
+        <View
+          className={`type-switcher__item ${currentType === 'income' ? 'active' : ''}`}
+          onClick={() => setCurrentType('income')}
+        >
+          <Text>收入</Text>
+        </View>
       </View>
 
       <DatePicker
@@ -223,8 +240,12 @@ export default function DataAnalyse() {
       {/* 图表卡片 */}
       <View className='chart-card'>
         <View className='chart-card__header'>
-          <Text className='chart-card__title'>支出构成</Text>
-          <Text className='chart-card__total'>总支出：¥{totalAmount.toFixed(2)}</Text>
+          <Text className='chart-card__title'>
+            {currentType === 'expense' ? '支出构成' : '收入构成'}
+          </Text>
+          <Text className='chart-card__total'>
+            {currentType === 'expense' ? '总支出' : '总收入'}：¥{totalAmount.toFixed(2)}
+          </Text>
         </View>
 
         <View className='chart-wrapper'>
@@ -239,7 +260,7 @@ export default function DataAnalyse() {
 
           {!loading && categoryData.length === 0 && (
             <View className='chart-card__empty chart-overlay'>
-              <Text>暂无支出数据</Text>
+              <Text>暂无{currentType === 'expense' ? '支出' : '收入'}数据</Text>
             </View>
           )}
         </View>
