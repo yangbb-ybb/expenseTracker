@@ -19,10 +19,14 @@ export default defineAppConfig({
       {
         pagePath: 'pages/index/index',
         text: '首页',
+        iconPath: 'assets/images/tabbar/home.png',
+        selectedIconPath: 'assets/images/tabbar/home-active.png',
       },
       {
         pagePath: 'pages/dataAnalyse/index',
         text: '分析',
+        iconPath: 'assets/images/tabbar/chart.png',
+        selectedIconPath: 'assets/images/tabbar/chart-active.png',
       },
     ],
   },
