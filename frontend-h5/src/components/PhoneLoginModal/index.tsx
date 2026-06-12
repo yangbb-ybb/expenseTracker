@@ -76,7 +76,7 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
     } catch (err: any) {
       Taro.showToast({ title: err?.message || '登录失败', icon: 'none' })
     } finally {
-      setLoading(false)
+      // setLoading(false)
     }
   }
 
@@ -139,7 +139,7 @@ export default function PhoneLoginModal({ onSuccess, onCancel }: Props) {
         <Button
           type="primary"
           block
-          loading={loading}
+          // loading={loading}
           onClick={handleLogin}
           style={{ ...btnPrimaryStyle, borderRadius: 8, height: 44 }}
         >

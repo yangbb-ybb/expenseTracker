@@ -185,8 +185,9 @@ public class UserDailyConsumeDetailServiceImpl implements UserDailyConsumeDetail
             }
         }
 
-        // 排序
-        wrapper.orderByDesc(UserDailyConsumeDetail::getConsumeAmount);
+        // 按时间倒序排序（先按消费日期，再按创建时间）
+        wrapper.orderByDesc(UserDailyConsumeDetail::getConsumeDate)
+                .orderByDesc(UserDailyConsumeDetail::getCreateTime);
 
         // 分页查询
         Page<UserDailyConsumeDetail> page = new Page<>(queryDTO.getPage(), queryDTO.getSize());

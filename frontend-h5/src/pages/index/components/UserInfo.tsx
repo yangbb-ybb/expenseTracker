@@ -25,6 +25,7 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
     totalExpense: '0.00',
     totalIncome: '0.00'
   })
+  const [switchDialogVisible, setSwitchDialogVisible] = useState(false)
 
   useEffect(() => {
     async function init() {
@@ -58,25 +59,21 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
     init()
   }, [])
 
-  const handleNameClick = async () => {
-    const login = async () => {
-      try {
-        await doLogin()
-      } catch (error: any) {
-        if (error?.message !== '用户取消登录') {
-          console.error('登录失败:', error)
-        }
+  const handleLogin = async () => {
+    try {
+      await doLogin()
+    } catch (error: any) {
+      if (error?.message !== '用户取消登录') {
+        console.error('登录失败:', error)
       }
     }
+  }
 
+  const handleNameClick = () => {
     if (isLoggedIn()) {
-      Dialog.open('switchAccountDialog', {
-        title: '提示',
-        content: '切换账号需重新登录，是否继续？',
-        onConfirm: login,
-      })
+      setSwitchDialogVisible(true)
     } else {
-      login()
+      handleLogin()
     }
   }
 
@@ -110,7 +107,17 @@ export default function UserInfo({ username, avatar, balance }: UserInfoProps) {
         <View className='user-info__info'>
           <Text className='user-info__name' onClick={handleNameClick}>{maskPhone(userInfo.username)}</Text>
           {userInfo.id && <Text className='user-info__id'>ID: {userInfo.id}</Text>}
-          <Dialog id='switchAccountDialog' />
+          <Dialog
+            visible={switchDialogVisible}
+            title='提示'
+            content='切换账号需重新登录，是否继续？'
+            onConfirm={() => {
+              setSwitchDialogVisible(false)
+              handleLogin()
+            }}
+            onCancel={() => setSwitchDialogVisible(false)}
+            onClose={() => setSwitchDialogVisible(false)}
+          />
         </View>
       </View>
       <View className='user-info__balance'>
