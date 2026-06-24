@@ -3,6 +3,8 @@
 node_modules
 dist
 .claude
+# Backend - Maven 构建产物（编译输出，不需要上传）
+admin/backend/target/
 # Backend logs
 admin/backend/logs/
 
