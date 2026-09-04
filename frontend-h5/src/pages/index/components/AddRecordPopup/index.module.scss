@@ -1,0 +1,8 @@
+/* 组件A.module.scss */
+.radioBox {
+  :global {
+    .nut-radio-icon-checked{
+      background-color: var(--theme-primary) !important;
+    }
+  }
+}

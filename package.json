@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@tarojs/cli": "3.6.40",
+    "@tarojs/components": "3.6.40",
+    "@tarojs/plugin-framework-react": "3.6.40",
+    "@tarojs/plugin-platform-h5": "3.6.40",
+    "@tarojs/router": "3.6.40",
+    "@tarojs/runtime": "3.6.40",
+    "@tarojs/taro": "3.6.40",
+    "@tarojs/webpack5-runner": "3.6.40"
+  }
+}

@@ -1,0 +1,37 @@
+.page {
+  min-height: 100vh;
+  background: #f7f7f7;
+  padding: 16px;
+  position: relative;
+}
+
+.fab-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 92px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: #fff;
+  border: 1px solid var(
+    --theme-primary-light
+  );
+  border-radius: 999px;
+  color: var(--theme-primary);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+
+  &:active {
+    background: #f5f5f5;
+  }
+}
+
+.page > * {
+  margin-bottom: 12px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

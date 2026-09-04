@@ -1,0 +1,28 @@
+.DS_Store
+.npm-cache
+node_modules
+dist
+.claude
+# Backend - Maven 构建产物（编译输出，不需要上传）
+admin/backend/target/
+# Backend logs
+admin/backend/logs/
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# *.md

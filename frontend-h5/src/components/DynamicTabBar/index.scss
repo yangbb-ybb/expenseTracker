@@ -1,0 +1,75 @@
+/* ===== DynamicTabBar ===== */
+
+.dyn-tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(56px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: #ffffff;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  align-items: stretch;
+  z-index: 100;
+  box-sizing: border-box;
+
+  &__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    user-select: none;
+
+    &:active {
+      transform: scale(0.94);
+    }
+
+    &.is-active .dyn-tabbar__text {
+      color: var(--theme-primary, #1677ff);
+    }
+  }
+
+  &__icon-wrap {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__icon {
+    width: 26px;
+    height: 26px;
+    display: block;
+  }
+
+  &__badge {
+    position: absolute;
+    top: -8px;
+    right: -22px;
+    background: #ff4d4f;
+    color: #ffffff;
+    font-size: 9px;
+    line-height: 1;
+    padding: 2px 5px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transform: scale(0.9);
+  }
+
+  &__text {
+    font-size: 11px;
+    color: #999999;
+    line-height: 1.2;
+
+    &.is-active {
+      color: var(--theme-primary, #1677ff);
+    }
+  }
+}
