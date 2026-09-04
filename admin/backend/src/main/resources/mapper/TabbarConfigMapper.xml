@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.repository.TabbarConfigMapper">
+
+    <!-- 通用列映射 -->
+    <resultMap id="BaseResultMap" type="com.example.entity.po.TabbarConfig">
+        <id     property="id"              column="id"/>
+        <result property="platform"        column="platform"/>
+        <result property="minAppVersion"   column="min_app_version"/>
+        <result property="maxAppVersion"   column="max_app_version"/>
+        <result property="pagePath"        column="page_path"/>
+        <result property="text"            column="text"/>
+        <result property="icon"            column="icon"/>
+        <result property="iconActive"      column="icon_active"/>
+        <result property="orderNum"        column="order_num"/>
+        <result property="visible"         column="visible"/>
+        <result property="status"          column="status"/>
+        <result property="forceUpdate"     column="force_update"/>
+        <result property="upgradeTip"      column="upgrade_tip"/>
+        <result property="upgradeUrl"      column="upgrade_url"/>
+        <result property="minVersion"      column="min_version"/>
+        <result property="isDeleted"       column="is_deleted"/>
+        <result property="createTime"      column="create_time"/>
+        <result property="updateTime"      column="update_time"/>
+    </resultMap>
+
+    <!--
+        按平台粗筛 + 按 order_num 升序
+        版本范围（min_app_version / max_app_version）由 Service 层做语义化比较后过滤
+    -->
+    <select id="selectActiveConfigs" resultMap="BaseResultMap">
+        SELECT
+            id, platform, min_app_version, max_app_version, page_path,
+            text, icon, icon_active, order_num, visible, status,
+            force_update, upgrade_tip, upgrade_url, min_version,
+            is_deleted, create_time, update_time
+        FROM tabbar_config
+        WHERE is_deleted = 0
+          AND (platform = #{platform} OR platform IS NULL OR platform = '')
+        ORDER BY order_num ASC, id ASC
+    </select>
+
+</mapper>
