@@ -97,4 +97,33 @@ public class TabbarConfigServiceImpl implements TabbarConfigService {
         vo.setStatus(cfg.getStatus());
         return vo;
     }
+
+    // ========== 管理后台 ==========
+
+    @Override
+    public com.baomidou.mybatisplus.core.metadata.IPage<TabbarConfig> listForAdmin(Integer isDeleted, String platform, String keyword, int page, int size) {
+        String platformParam = (platform == null || platform.trim().isEmpty()) ? null : platform.trim();
+        List<TabbarConfig> all = tabbarConfigMapper.selectAdminList(isDeleted, platformParam, keyword);
+
+        // 内存分页（tab 数量小，简单点）
+        com.baomidou.mybatisplus.extension.plugins.pagination.Page<TabbarConfig> p =
+                new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(page + 1, size);
+        p.setTotal(all.size());
+        int from = Math.min(page * size, all.size());
+        int to = Math.min(from + size, all.size());
+        p.setRecords(new ArrayList<>(all.subList(from, to)));
+        return p;
+    }
+
+    @Override
+    public boolean softDelete(Long id) {
+        if (id == null) return false;
+        return tabbarConfigMapper.softDelete(id) > 0;
+    }
+
+    @Override
+    public boolean restore(Long id) {
+        if (id == null) return false;
+        return tabbarConfigMapper.restore(id) > 0;
+    }
 }

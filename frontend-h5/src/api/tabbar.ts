@@ -29,7 +29,7 @@ export const APP_VERSION: string = (pkg as any).version || '1.0.0'
  * 获取 tabBar 配置（按 appVersion + platform 下发，支持老版本兼容）
  */
 export function getTabbarConfig(): Promise<TabbarConfigResponse> {
-  return http.get('/api/tabbar/config', {
+  return http.get('/tabbar/config', {
     params: {
       appVersion: APP_VERSION,
       platform: 'h5',

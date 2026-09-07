@@ -13,6 +13,9 @@
 --   2) 在本表加一行配置（pagePath = 白名单里的某个值）
 USE backend;
 
+-- 客户端连接字符集设为 utf8mb4，避免中文双重编码（mysql 命令行默认 latin1）
+SET NAMES utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `tabbar_config` (
     `id`                 BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `platform`           VARCHAR(20)  DEFAULT NULL COMMENT '目标平台：h5 / weapp；NULL = 全部平台',

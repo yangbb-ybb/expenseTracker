@@ -37,6 +37,12 @@ spring:
   application:
     name: backend
 
+  mvc:
+    servlet:
+      # 立即初始化 DispatcherServlet，避免第一个请求触发懒加载时 mapping 还没注册完
+      # 导致 NoResourceFoundException 被 GlobalExceptionHandler 兜成 500
+      load-on-startup: 1
+
   data:
     redis:
       host: localhost

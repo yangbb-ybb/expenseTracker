@@ -127,13 +127,8 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Spring Boot DevTools：开发时自动重启，修改代码后无需手动重启 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
+        <!-- Spring Boot DevTools 已移除：会导致新增 Controller 时 dispatcher 反复重初始化，
+             启动瞬间路由未注册，第一个请求 404。前端 H5 场景下改用手动重启即可。 -->
     </dependencies>
 
     <build>

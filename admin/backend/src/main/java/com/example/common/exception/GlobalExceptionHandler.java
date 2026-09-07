@@ -4,9 +4,13 @@ import com.example.common.result.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * 全局异常处理器
@@ -16,11 +20,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @RestControllerAdvice = @ControllerAdvice + @ResponseBody
  *                        表示这是一个全局异常处理类
  *
- * 异常处理顺序：
- *   1. BusinessException - 业务异常（我们自己定义的）
- *   2. MethodArgumentNotValidException - 参数校验失败（@Valid 注解生效）
- *   3. BindException - 参数绑定失败
- *   4. Exception - 其他所有未处理的异常
+ * 异常处理顺序（Spring 自动选最具体的）：
+ *   1. BusinessException              - 业务异常
+ *   2. MethodArgumentNotValidException - @Valid 校验失败
+ *   3. BindException                   - 参数绑定失败
+ *   4. NoResourceFoundException        - 静态资源/找不到路由 (404)
+ *   5. NoHandlerFoundException         - 同上 (404)
+ *   6. HttpRequestMethodNotSupportedException - 方法不允许 (405)
+ *   7. HttpMediaTypeNotAcceptableException    - Accept 不匹配 (406)
+ *   8. Exception                       - 其他所有未处理异常 (500)
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -58,6 +66,33 @@ public class GlobalExceptionHandler {
     public Result<?> handleBindException(BindException e) {
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
         return Result.error(400, message);
+    }
+
+    /**
+     * Spring 6.1+：静态资源/找不到匹配的路由（DispatcherServlet 找不到 Controller 时抛）
+     * 必须显式映射到 404，否则会被下面的 Exception 兜底成 500
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public Result<?> handleNoResource(NoResourceFoundException e) {
+        return Result.error(404, "资源不存在: " + e.getResourcePath());
+    }
+
+    /** 兼容旧版：找不到 Handler */
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public Result<?> handleNoHandler(NoHandlerFoundException e) {
+        return Result.error(404, "接口不存在: " + e.getRequestURL());
+    }
+
+    /** HTTP 方法不匹配（GET/POST/PUT/DELETE） */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public Result<?> handleMethodNotSupported(HttpRequestMethodNotSupportedException e) {
+        return Result.error(405, "请求方法不支持: " + e.getMethod());
+    }
+
+    /** Accept 头不匹配（如 Accept: text/html 但 Controller 只产 JSON） */
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public Result<?> handleNotAcceptable(HttpMediaTypeNotAcceptableException e) {
+        return Result.error(406, "客户端要求的响应格式不被支持");
     }
 
     /**

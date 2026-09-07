@@ -25,4 +25,28 @@ public interface TabbarConfigMapper extends BaseMapper<TabbarConfig> {
      * @return 配置列表（已按 order_num 升序）
      */
     List<TabbarConfig> selectActiveConfigs(@Param("platform") String platform);
+
+    /**
+     * 管理后台分页查询（含已删除的）
+     *
+     * @param isDeleted null=全部, 0=未删除, 1=已删除
+     * @param platform  null=全部平台
+     * @param keyword   page_path / text 模糊匹配（可选）
+     * @return 配置列表（按 order_num 升序）
+     */
+    List<TabbarConfig> selectAdminList(@Param("isDeleted") Integer isDeleted,
+                                       @Param("platform") String platform,
+                                       @Param("keyword") String keyword);
+
+    /**
+     * 软删除：is_deleted 置 1（幂等）
+     * @return 影响行数
+     */
+    int softDelete(@Param("id") Long id);
+
+    /**
+     * 恢复软删除：is_deleted 置 0
+     * @return 影响行数
+     */
+    int restore(@Param("id") Long id);
 }

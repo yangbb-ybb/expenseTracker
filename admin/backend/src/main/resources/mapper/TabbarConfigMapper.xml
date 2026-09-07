@@ -41,4 +41,45 @@
         ORDER BY order_num ASC, id ASC
     </select>
 
+    <!--
+        管理后台分页查询
+          - isDeleted: null=全部, 0=未删, 1=已删
+          - platform:  null=全部平台
+          - keyword:   模糊匹配 page_path / text（可选）
+        注意：分页由 Service 层在内存里做（tab 量小，先简单点）
+    -->
+    <select id="selectAdminList" resultMap="BaseResultMap">
+        SELECT
+            id, platform, min_app_version, max_app_version, page_path,
+            text, icon, icon_active, order_num, visible, status,
+            force_update, upgrade_tip, upgrade_url, min_version,
+            is_deleted, create_time, update_time
+        FROM tabbar_config
+        <where>
+            <if test="isDeleted != null">AND is_deleted = #{isDeleted}</if>
+            <if test="platform != null and platform != ''">AND platform = #{platform}</if>
+            <if test="keyword != null and keyword != ''">
+                AND (page_path LIKE CONCAT('%', #{keyword}, '%')
+                  OR text LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <!-- 排除元信息行（除非显式按 page_path 搜了 __GLOBAL__） -->
+            <if test="keyword == null or keyword == ''">AND page_path != '__GLOBAL__'</if>
+        </where>
+        ORDER BY order_num ASC, id ASC
+    </select>
+
+    <!-- 软删除：幂等 -->
+    <update id="softDelete">
+        UPDATE tabbar_config
+        SET is_deleted = 1
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <!-- 恢复软删除 -->
+    <update id="restore">
+        UPDATE tabbar_config
+        SET is_deleted = 0
+        WHERE id = #{id} AND is_deleted = 1
+    </update>
+
 </mapper>
